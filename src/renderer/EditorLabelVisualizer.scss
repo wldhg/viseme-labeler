@@ -1,0 +1,137 @@
+@use 'sass:list';
+@use 'visemes';
+
+$viseme-block-width: 5px;
+$viseme-block-pad: 3px;
+
+$viseme-ja: #7bba6e;
+$viseme-mo: #e0543c;
+$viseme-no: #9ec7f7;
+$viseme-others: orange;
+$viseme-selected: yellow;
+
+#visemewrap {
+  background-color: rgba(128, 128, 128, 0.1);
+  border-radius: 0.5em;
+  padding: 16px;
+  box-sizing: border-box;
+  width: 100%;
+  max-width: 100%;
+  margin: 16px 0;
+  height: 152px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  #visemecont {
+    position: absolute;
+    left: 32px;
+    right: 32px;
+    top: 16px;
+    bottom: 16px;
+    display: flex;
+  }
+
+  #visemeline {
+    background-color: $viseme-others;
+    width: 1px;
+    max-width: 1px;
+    height: 136px;
+    position: absolute;
+    bottom: 8px;
+    left: 331px;
+  }
+
+  .visemeblock {
+    width: $viseme-block-width;
+    min-width: $viseme-block-width;
+    max-width: $viseme-block-width;
+    margin-top: 28px;
+    height: 90px;
+    background-color: rgba(128, 128, 128, 0.5);
+    margin-right: $viseme-block-pad;
+
+    &[data-selected='true'] {
+      outline: 1px solid $viseme-selected;
+    }
+
+    &[data-timeline]:not([data-timeline='']) {
+      &::before {
+        content: attr(data-timeline);
+        font-family: 'Inconsolata', monospace;
+        position: absolute;
+        margin-top: -30px;
+        font-size: 15px;
+        width: 10ex;
+        margin-left: -5ex;
+        text-align: center;
+      }
+      &::after {
+        position: absolute;
+        top: 20px;
+        width: $viseme-block-width;
+        height: 5px;
+        background-color: $viseme-others;
+        content: '';
+      }
+    }
+
+    @each $c in visemes.$ja {
+      &[data-label='#{$c}'] {
+        background-color: $viseme-ja;
+      }
+    }
+
+    @each $c in visemes.$mo {
+      &[data-label='#{$c}'] {
+        background-color: $viseme-mo;
+      }
+    }
+
+    &[data-label='#{visemes.$empty_str}'] {
+      background-color: $viseme-no;
+    }
+
+    &[data-displabel='true']:not([data-label='']) span {
+      font-family: 'Inconsolata', monospace;
+      font-weight: 900;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: block;
+      background-color: rgba(0, 0, 0, 0.3);
+
+      &::after {
+        position: absolute;
+        right: 1px;
+        text-shadow: black 0 0 8px;
+        width: 5ex;
+        text-align: right;
+      }
+
+      @for $i from 1 through list.length(visemes.$ja) {
+        $c: list.nth(visemes.$ja, $i);
+        &[data-label='#{$c}'] {
+          &::after {
+            top: 3px * $i;
+            content: "#{'_' + $c}";
+          }
+        }
+      }
+
+      @for $i from 1 through list.length(visemes.$mo) {
+        $c: list.nth(visemes.$mo, $i);
+        &[data-label='#{$c}'] {
+          &::after {
+            bottom: 3px * $i;
+            content: "#{'_' + $c}";
+          }
+        }
+      }
+    }
+  }
+}

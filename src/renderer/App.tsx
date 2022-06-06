@@ -1,40 +1,119 @@
+import { useContext, useEffect } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
-import icon from '../../assets/icon.svg';
-import $ from './App.scss';
+import {
+  ThemeProvider,
+  createTheme,
+  Box,
+  Drawer,
+  CssBaseline,
+  AppBar,
+  Toolbar,
+  Typography,
+  Divider,
+} from '@mui/material';
+import GlobalContext, { GlobalContextProvider } from '../context/global';
+import DialogContext, { DialogContextProvider } from '../context/dialog';
+import { EditorContextProvider } from '../context/editor';
 
-const Hello = () => {
+import './App.scss';
+import AppDialog from './AppDialog';
+import AppEditList from './AppEditList';
+import AppToolbar from './AppToolbar';
+import AppHeader from './AppHeader';
+import Editor from './Editor';
+
+const drawerWidth = 300;
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
+
+const AppMain = () => {
+  const ctx = useContext(GlobalContext);
+  const dialog = useContext(DialogContext);
+
+  useEffect(() => {
+    window.electron.ipcRenderer.on('destroy-ask', () => {
+      if (ctx.doesCurrentItemHasChange) {
+        dialog.setButtonHandler(() => {
+          window.electron.ipcRenderer.sendMessage('destroy-force', []);
+        });
+        dialog.setTitle('Do you want to close VisLab?');
+        dialog.setContent(
+          <span>If you close VisLab, you will lose all changes.</span>
+        );
+        dialog.setButtonLabel('Close VisLab');
+        dialog.setShow(true);
+      } else {
+        window.electron.ipcRenderer.sendMessage('destroy-force', []);
+      }
+    });
+    return () => {
+      window.electron.ipcRenderer.removeAllListeners('destroy-ask');
+    };
+  }, [ctx.doesCurrentItemHasChange, dialog]);
+
+  let bodyText = 'Please specify a working directory to load target file list.';
+  if (ctx.baseDirectoryRead) {
+    if (ctx.currentItemIndex < 0) {
+      bodyText = 'Select a file at left menu to start processing.';
+    } else {
+      bodyText = '';
+    }
+  }
+
   return (
-    <div>
-      <div className={$.hello}>
-        <img width="200px" alt="icon" src={icon} />
-      </div>
-      <h1>electron-react-boilerplate</h1>
-      <div className={$.hello}>
-        <a
-          href="https://electron-react-boilerplate.js.org/"
-          target="_blank"
-          rel="noreferrer"
+    <div className="container">
+      <Box sx={{ display: 'flex' }}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
+          sx={{
+            width: `calc(100% - ${drawerWidth}px)`,
+            ml: `${drawerWidth}px`,
+          }}
         >
-          <button type="button">
-            <span role="img" aria-label="books">
-              📚
-            </span>
-            Read our docs
-          </button>
-        </a>
-        <a
-          href="https://github.com/sponsors/electron-react-boilerplate"
-          target="_blank"
-          rel="noreferrer"
+          <Toolbar>
+            <AppHeader />
+          </Toolbar>
+        </AppBar>
+        <Drawer
+          sx={{
+            width: drawerWidth,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: drawerWidth,
+              boxSizing: 'border-box',
+            },
+          }}
+          variant="permanent"
+          anchor="left"
         >
-          <button type="button">
-            <span role="img" aria-label="books">
-              🙏
-            </span>
-            Donate
-          </button>
-        </a>
-      </div>
+          <AppToolbar />
+          <Divider />
+          {ctx.baseDirectoryRead && <AppEditList />}
+        </Drawer>
+        <Box
+          component="main"
+          sx={{ flexGrow: 1, bgcolor: 'background.default', p: 3 }}
+        >
+          <Toolbar />
+          <EditorContextProvider>
+            {ctx.baseDirectoryRead && ctx.currentItemIndex >= 0 ? (
+              <Editor />
+            ) : (
+              <>
+                <Typography paragraph>{bodyText}</Typography>
+                <Typography paragraph>
+                  &copy; 2022 POSTECH AIoT Laboratory.
+                </Typography>
+              </>
+            )}
+          </EditorContextProvider>
+        </Box>
+      </Box>
+      <AppDialog />
     </div>
   );
 };
@@ -43,7 +122,18 @@ export default function App() {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Hello />} />
+        <Route
+          path="/"
+          element={
+            <GlobalContextProvider>
+              <DialogContextProvider>
+                <ThemeProvider theme={darkTheme}>
+                  <AppMain />
+                </ThemeProvider>
+              </DialogContextProvider>
+            </GlobalContextProvider>
+          }
+        />
       </Routes>
     </Router>
   );

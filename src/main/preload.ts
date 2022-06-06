@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
+import { R2MChannels } from '../channel/shared';
 
-export type Channels = 'ipc-example';
+export type Channels = 'ipc-example' | 'destroy-force' | R2MChannels;
 
 contextBridge.exposeInMainWorld('electron', {
   ipcRenderer: {
@@ -16,6 +17,12 @@ contextBridge.exposeInMainWorld('electron', {
     },
     once(channel: Channels, func: (...args: unknown[]) => void) {
       ipcRenderer.once(channel, (_event, ...args) => func(...args));
+    },
+    removeEventListener(channel: Channels, func: (...args: unknown[]) => void) {
+      ipcRenderer.removeListener(channel, func);
+    },
+    removeAllListeners(channel: Channels) {
+      ipcRenderer.removeAllListeners(channel);
     },
   },
 });

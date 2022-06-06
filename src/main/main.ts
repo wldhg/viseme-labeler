@@ -8,10 +8,13 @@
  * When running `npm run build` or `npm run build:main`, this file is compiled to
  * `./src/main.js` using webpack. This gives us some performance wins.
  */
+
 import path from 'path';
 import { app, BrowserWindow, shell, ipcMain } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
+import registerMainChannels from '../channel/main';
+import { Hermes } from '../channel/shared';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
@@ -30,6 +33,23 @@ ipcMain.on('ipc-example', async (event, arg) => {
   console.log(msgTemplate(arg));
   event.reply('ipc-example', msgTemplate('pong'));
 });
+
+ipcMain.on('destroy-force', () => {
+  if (mainWindow) {
+    mainWindow.destroy();
+  }
+});
+
+const getHermes = async () => {
+  if (mainWindow) {
+    const hermes: Hermes = (channel, ...args) =>
+      mainWindow?.webContents.send(channel, ...args);
+    return { hermes, mainWindow };
+  }
+  throw new Error('"mainWindow" does not exist');
+};
+
+registerMainChannels(getHermes);
 
 if (process.env.NODE_ENV === 'production') {
   const sourceMapSupport = require('source-map-support');
@@ -78,6 +98,7 @@ const createWindow = async () => {
       preload: app.isPackaged
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
+      webSecurity: false,
     },
   });
 
@@ -91,6 +112,14 @@ const createWindow = async () => {
       mainWindow.minimize();
     } else {
       mainWindow.show();
+    }
+  });
+
+  mainWindow.on('close', async (e) => {
+    if (mainWindow) {
+      e.preventDefault();
+      mainWindow.webContents.send('destroy-ask');
+      console.log('Destroy request asked.');
     }
   });
 

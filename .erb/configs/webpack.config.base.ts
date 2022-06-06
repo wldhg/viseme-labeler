@@ -48,6 +48,10 @@ const configuration: webpack.Configuration = {
       NODE_ENV: 'production',
     }),
   ],
+
+  watchOptions: {
+    ignored: /.git/,
+  },
 };
 
 export default configuration;
