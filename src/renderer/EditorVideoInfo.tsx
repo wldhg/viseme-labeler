@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Breadcrumbs, Card } from '@mui/material';
-import EditorContext from 'context/editor';
+import EditorContext from '../context/editor';
 
 type EditorVideoInfoProps = {
   currentFrame: number;

@@ -8,7 +8,7 @@ import {
   Divider,
 } from '@mui/material';
 import Selecto from 'react-selecto';
-import EditorContext from 'context/editor';
+import EditorContext from '../context/editor';
 import EditorVideoInfo from './EditorVideoInfo';
 import EditorVideoProgress from './EditorVideoProgress';
 import EditorVideoPlayer from './EditorVideoPlayer';

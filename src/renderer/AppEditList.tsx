@@ -7,7 +7,7 @@ import {
   ListItemIcon,
 } from '@mui/material';
 import { Check, MoreHoriz } from '@mui/icons-material';
-import GlobalContext from 'context/global';
+import GlobalContext from '../context/global';
 
 const EditList = () => {
   const ctx = useContext(GlobalContext);

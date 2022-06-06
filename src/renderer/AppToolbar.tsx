@@ -7,8 +7,8 @@ import {
   ChangeCircleOutlined,
   Help,
 } from '@mui/icons-material';
-import GlobalContext, { GlobalContextItem } from 'context/global';
-import DialogContext from 'context/dialog';
+import GlobalContext, { GlobalContextItem } from '../context/global';
+import DialogContext from '../context/dialog';
 
 const AppToolbar = () => {
   const ctx = useContext(GlobalContext);

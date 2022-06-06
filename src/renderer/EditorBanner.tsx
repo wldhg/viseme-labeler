@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Stack } from '@mui/material';
-import EditorContext from 'context/editor';
+import EditorContext from '../context/editor';
 
 const EditorBanner = () => {
   const ed = useContext(EditorContext);

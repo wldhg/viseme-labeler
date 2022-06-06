@@ -1,8 +1,8 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 
 import { useEffect, useState, useContext, useRef } from 'react';
-import GlobalContext from 'context/global';
-import EditorContext from 'context/editor';
+import GlobalContext from '../context/global';
+import EditorContext from '../context/editor';
 
 type EditorVideoPlayerProps = {
   playerRef: React.RefObject<HTMLVideoElement>;

@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+
 import 'webpack-dev-server';
 import path from 'path';
 import fs from 'fs';

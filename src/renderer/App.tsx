@@ -34,7 +34,7 @@ const AppMain = () => {
   const dialog = useContext(DialogContext);
 
   useEffect(() => {
-    window.electron.ipcRenderer.on('destroy-ask', () => {
+    window.electron?.ipcRenderer.on('destroy-ask', () => {
       if (ctx.doesCurrentItemHasChange) {
         dialog.setButtonHandler(() => {
           window.electron.ipcRenderer.sendMessage('destroy-force', []);
@@ -50,7 +50,7 @@ const AppMain = () => {
       }
     });
     return () => {
-      window.electron.ipcRenderer.removeAllListeners('destroy-ask');
+      window.electron?.ipcRenderer.removeAllListeners('destroy-ask');
     };
   }, [ctx.doesCurrentItemHasChange, dialog]);
 

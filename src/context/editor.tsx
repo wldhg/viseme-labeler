@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { createContext, useState, useRef } from 'react';
-import events from 'events';
 
 export type EditorVideoInfo = {
   readonly duration: number;

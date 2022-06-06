@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { Stack, LinearProgress } from '@mui/material';
-import EditorContext from 'context/editor';
+import EditorContext from '../context/editor';
 
 type EditorVideoProgressProps = {
   player: HTMLVideoElement | null;

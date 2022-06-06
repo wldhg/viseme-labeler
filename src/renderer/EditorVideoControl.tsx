@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import { Button, Stack } from '@mui/material';
 import { PlayArrow, Pause } from '@mui/icons-material';
-import EditorContext from 'context/editor';
+import EditorContext from '../context/editor';
 
 type EditorVideoControlProps = {
   player: HTMLVideoElement | null;

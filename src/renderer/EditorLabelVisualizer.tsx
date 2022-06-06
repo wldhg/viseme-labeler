@@ -1,6 +1,6 @@
 import { useContext, useEffect } from 'react';
 import Selecto, { OnSelect } from 'react-selecto';
-import EditorContext from 'context/editor';
+import EditorContext from '../context/editor';
 
 import './EditorLabelVisualizer.scss';
 import _visemes from './visemes.json';

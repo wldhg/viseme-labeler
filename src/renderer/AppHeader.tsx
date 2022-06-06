@@ -1,6 +1,6 @@
-import GlobalContext from 'context/global';
 import { useContext } from 'react';
 import { Typography } from '@mui/material';
+import GlobalContext from '../context/global';
 
 const AppHeader = () => {
   const ctx = useContext(GlobalContext);

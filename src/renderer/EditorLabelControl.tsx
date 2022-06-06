@@ -1,8 +1,8 @@
 import { useContext } from 'react';
 import { Stack, Button } from '@mui/material';
 import Selecto from 'react-selecto';
-import GlobalContext from 'context/global';
-import EditorContext from 'context/editor';
+import GlobalContext from '../context/global';
+import EditorContext from '../context/editor';
 
 import _visemes from './visemes.json';
 

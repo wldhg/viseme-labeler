@@ -8,7 +8,7 @@ import {
   DialogActions,
   Button,
 } from '@mui/material';
-import DialogContext from 'context/dialog';
+import DialogContext from '../context/dialog';
 
 const AppDialog = () => {
   const dialog = useContext(DialogContext);
