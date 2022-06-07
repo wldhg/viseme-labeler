@@ -1,0 +1,17 @@
+{
+  "visemes": {
+    "-": "empty_str",
+    "pm": "typea",
+    "s": "typea",
+    "sh": "typeb",
+    "uu": "typec",
+    "eu": "typec",
+    "ee": "typec",
+    "eo": "typec",
+    "oo": "typec",
+    "aa": "typec",
+    "ii": "typec",
+    "jy": "typed",
+    "ww": "typed"
+  }
+}

@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useContext, useRef } from 'react';
 import GlobalContext from '../context/global';
-import EditorContext from '../context/editor';
+import EditorContext, { EditorLabelContent } from '../context/editor';
 
 type EditorVideoPlayerProps = {
   playerRef: React.RefObject<HTMLVideoElement>;
@@ -82,7 +82,7 @@ const EditorVideoPlayer = (props: EditorVideoPlayerProps) => {
                     (timings, labels) => {
                       ed.forceSetLabelData(
                         timings as number[],
-                        labels as number[]
+                        labels as EditorLabelContent
                       );
                       ed.setIsAnalyzed(true);
                     }

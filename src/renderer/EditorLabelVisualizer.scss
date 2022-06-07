@@ -1,13 +1,14 @@
-@use 'sass:list';
-@use 'visemes';
-
-$viseme-block-width: 5px;
+$viseme-block-width: 3px;
+$viseme-block-height: 60px;
 $viseme-block-pad: 3px;
+$viseme-block-vpad: 9px;
 
-$viseme-ja: #7bba6e;
-$viseme-mo: #e0543c;
-$viseme-no: #9ec7f7;
-$viseme-others: orange;
+$viseme-a: #98c9f8;
+$viseme-b: #ce8fd8;
+$viseme-c: #67be69;
+$viseme-d: #f9a731;
+$viseme-no: white;
+$viseme-others: red;
 $viseme-selected: yellow;
 
 #visemewrap {
@@ -18,7 +19,10 @@ $viseme-selected: yellow;
   width: 100%;
   max-width: 100%;
   margin: 16px 0;
-  height: 152px;
+  height: calc(
+    #{62px + $viseme-block-height} + #{$viseme-block-height + $viseme-block-vpad} *
+      (var(--track-cnt) - 1)
+  );
   overflow-x: auto;
   overflow-y: hidden;
   position: relative;
@@ -27,20 +31,31 @@ $viseme-selected: yellow;
     display: none;
   }
 
-  #visemecont {
+  .visemecont {
     position: absolute;
     left: 32px;
     right: 32px;
     top: 16px;
     bottom: 16px;
     display: flex;
+    margin-left: calc(
+      300px + var(--current-frame) * #{-1 * (
+          $viseme-block-width + $viseme-block-pad
+        )}
+    );
+    margin-top: calc(
+      var(--track-no) * #{$viseme-block-height + $viseme-block-vpad}
+    );
   }
 
   #visemeline {
     background-color: $viseme-others;
     width: 1px;
     max-width: 1px;
-    height: 136px;
+    height: calc(
+      #{46px + $viseme-block-height} + #{$viseme-block-height + $viseme-block-vpad} *
+        (var(--track-cnt) - 1)
+    );
     position: absolute;
     bottom: 8px;
     left: 331px;
@@ -50,16 +65,17 @@ $viseme-selected: yellow;
     width: $viseme-block-width;
     min-width: $viseme-block-width;
     max-width: $viseme-block-width;
-    margin-top: 28px;
-    height: 90px;
+    height: $viseme-block-height;
     background-color: rgba(128, 128, 128, 0.5);
     margin-right: $viseme-block-pad;
+    margin-top: 28px;
+    border-radius: 3px;
 
     &[data-selected='true'] {
       outline: 1px solid $viseme-selected;
     }
 
-    &[data-timeline]:not([data-timeline='']) {
+    &[data-track='0'][data-timeline]:not([data-timeline='']) {
       &::before {
         content: attr(data-timeline);
         font-family: 'Inconsolata', monospace;
@@ -70,9 +86,12 @@ $viseme-selected: yellow;
         margin-left: -5ex;
         text-align: center;
       }
+    }
+
+    &[data-timeline]:not([data-timeline='']) {
       &::after {
         position: absolute;
-        top: 20px;
+        top: 21px;
         width: $viseme-block-width;
         height: 5px;
         background-color: $viseme-others;
@@ -80,23 +99,27 @@ $viseme-selected: yellow;
       }
     }
 
-    @each $c in visemes.$ja {
-      &[data-label='#{$c}'] {
-        background-color: $viseme-ja;
-      }
+    &[data-type='typea'] {
+      background-color: $viseme-a;
     }
 
-    @each $c in visemes.$mo {
-      &[data-label='#{$c}'] {
-        background-color: $viseme-mo;
-      }
+    &[data-type='typeb'] {
+      background-color: $viseme-b;
     }
 
-    &[data-label='#{visemes.$empty_str}'] {
+    &[data-type='typec'] {
+      background-color: $viseme-c;
+    }
+
+    &[data-type='typed'] {
+      background-color: $viseme-d;
+    }
+
+    &[data-state='noise'] {
       background-color: $viseme-no;
     }
 
-    &[data-displabel='true']:not([data-label='']) span {
+    span {
       font-family: 'Inconsolata', monospace;
       font-weight: 900;
       position: relative;
@@ -111,26 +134,8 @@ $viseme-selected: yellow;
         text-shadow: black 0 0 8px;
         width: 5ex;
         text-align: right;
-      }
-
-      @for $i from 1 through list.length(visemes.$ja) {
-        $c: list.nth(visemes.$ja, $i);
-        &[data-label='#{$c}'] {
-          &::after {
-            top: 3px * $i;
-            content: "#{'_' + $c}";
-          }
-        }
-      }
-
-      @for $i from 1 through list.length(visemes.$mo) {
-        $c: list.nth(visemes.$mo, $i);
-        &[data-label='#{$c}'] {
-          &::after {
-            bottom: 3px * $i;
-            content: "#{'_' + $c}";
-          }
-        }
+        content: var(--label-content);
+        top: calc(2px + var(--label-margin) * 1px);
       }
     }
   }

@@ -7,29 +7,68 @@ export type EditorVideoInfo = {
   readonly frames: number;
 };
 
-export type EditorLabelData = {
-  readonly timing: number[];
-  readonly label: number[];
+export type EditorLabelTrack = 0 | 1;
+export type EditorLabelIndex = number;
+export type EditorLabelExp = string;
+
+export const EditorLabelTracks: ReadonlyArray<EditorLabelTrack> = [
+  0, 1,
+] as const;
+
+export type MutableEditorSelection = {
+  [key in EditorLabelTrack]: EditorLabelIndex[];
 };
+export type EditorSelection = {
+  readonly [key in EditorLabelTrack]: readonly EditorLabelIndex[];
+};
+
+export type MutableEditorLabelContent = {
+  [key in EditorLabelTrack]: {
+    [key: EditorLabelIndex]: EditorLabelExp;
+  };
+};
+export type EditorLabelContent = {
+  readonly [key in EditorLabelTrack]: {
+    readonly [key: EditorLabelIndex]: EditorLabelExp;
+  };
+};
+
+export type MutableEditorLabelData = {
+  timing: number[];
+  label: MutableEditorLabelContent;
+};
+export type EditorLabelData = {
+  readonly timing: readonly number[];
+  readonly label: EditorLabelContent;
+};
+
+export type MutableEditorLabelLastIndex = {
+  [key in EditorLabelTrack]: EditorLabelIndex;
+};
+export type EditorLabelLastIndex = {
+  readonly [key in EditorLabelTrack]: EditorLabelIndex;
+};
+
+export const EditorLabelNotLabelled = '__not_labelled__';
 
 export type EditorContextT = {
   readonly videoInfo: EditorVideoInfo;
   setVideoInfo: (videoInfo: EditorVideoInfo) => void;
   readonly labelData: EditorLabelData;
-  readonly selection: number[];
-  setSelection: (selection: number[]) => void;
-  lastLabeled: number;
-  label: (viseme: number) => void;
-  banner: string;
+  readonly selection: EditorSelection;
+  setSelection: (selection: EditorSelection) => void;
+  readonly lastLabeled: EditorLabelLastIndex;
+  label: (viseme: EditorLabelExp) => void;
+  readonly banner: string;
   setBanner: (bannerCategory: string, banner: string, time?: number) => void;
-  isAnalyzed: boolean;
+  readonly isAnalyzed: boolean;
   setIsAnalyzed: (analyzed: boolean) => void;
-  selectAndLabel: (selection: number[], viseme: number) => void;
-  forceSetLabelData: (timings: number[], label: number[]) => void;
+  selectAndLabel: (selection: EditorSelection, viseme: EditorLabelExp) => void;
+  forceSetLabelData: (timings: number[], labels: EditorLabelContent) => void;
   reset: () => void;
 };
 
-const EditorContextDefault: EditorContextT = {
+export const EditorContextDefault: EditorContextT = {
   videoInfo: {
     duration: 0,
     fps: 0,
@@ -38,18 +77,27 @@ const EditorContextDefault: EditorContextT = {
   setVideoInfo: (_videoInfo: EditorVideoInfo) => {},
   labelData: {
     timing: [],
-    label: [],
+    label: {
+      0: {},
+      1: {},
+    },
   },
-  selection: [],
-  setSelection: (_selection: number[]) => {},
-  lastLabeled: -1,
-  label: (_viseme: number) => {},
+  selection: {
+    0: [],
+    1: [],
+  },
+  setSelection: (_selection: EditorSelection) => {},
+  lastLabeled: {
+    0: -1,
+    1: -1,
+  },
+  label: (_viseme: EditorLabelExp) => {},
   banner: '',
   setBanner: (_bannerCategory: string, _banner: string, _time?: number) => {},
   isAnalyzed: false,
   setIsAnalyzed: (_analyzed: boolean) => {},
-  selectAndLabel: (_selection: number[], _viseme: number) => {},
-  forceSetLabelData: (_timings: number[], _label: number[]) => {},
+  selectAndLabel: (_selection: EditorSelection, _viseme: EditorLabelExp) => {},
+  forceSetLabelData: (_timings: number[], _labels: EditorLabelContent) => {},
   reset: () => {},
 };
 const EditorContext = createContext<EditorContextT>(EditorContextDefault);
@@ -65,39 +113,47 @@ export const EditorContextProvider = (props: EditorContextProps) => {
     '1-select': 'Select frame box(es) to start labeling.',
   };
 
-  const [videoInfo, setVideoInfo] = useState<EditorVideoInfo>({
-    duration: 0,
-    fps: 0,
-    frames: 0,
-  });
-  const [labelData, setLabelData] = useState<EditorLabelData>({
-    timing: [],
-    label: [],
-  });
-  const [selection, setSelection] = useState<number[]>([]);
-  const [lastLabeled, setLastLabeled] = useState<number>(-1);
+  const [videoInfo, setVideoInfo] = useState<EditorVideoInfo>(
+    EditorContextDefault.videoInfo
+  );
+  const [labelData, setLabelData] = useState<EditorLabelData>(
+    EditorContextDefault.labelData
+  );
+  const [selection, setSelection] = useState<EditorSelection>(
+    EditorContextDefault.selection
+  );
+  const [lastLabeled, setLastLabeled] = useState<EditorLabelLastIndex>(
+    EditorContextDefault.lastLabeled
+  );
   const [isAnalyzed, setIsAnalyzed] = useState<boolean>(false);
   const [banner, setBannerInternal] = useState<string>('');
   const banners = useRef<{ [key: string]: string }>(defaultBanners);
   const bannerAutoRemoval = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
-  const selectAndLabel = (selec: number[], viseme: number) => {
+  const selectAndLabel = (selec: EditorSelection, viseme: EditorLabelExp) => {
     setSelection(selec);
-    if (selec.length > 0) {
-      const maxLabel = Math.max(...selec);
-      setLastLabeled(maxLabel);
-      const currentLabel = labelData.label;
-      selec.forEach((i) => {
-        currentLabel[i] = viseme;
-      });
-      setLabelData({
-        timing: labelData.timing,
-        label: currentLabel,
-      });
-    }
+
+    const ll: MutableEditorLabelLastIndex = lastLabeled;
+    const cl: MutableEditorLabelContent = labelData.label;
+
+    EditorLabelTracks.forEach((trackIdx) => {
+      if (selec[trackIdx].length > 0) {
+        const maxLabel = Math.max(...selec[trackIdx]);
+        ll[trackIdx] = maxLabel;
+        selec[trackIdx].forEach((i) => {
+          cl[trackIdx][i] = viseme;
+        });
+      }
+    });
+
+    setLabelData({
+      timing: labelData.timing,
+      label: cl,
+    });
+    setLastLabeled(ll);
   };
 
-  const label = (viseme: number) => {
+  const label = (viseme: EditorLabelExp) => {
     return selectAndLabel(selection, viseme);
   };
 
@@ -131,22 +187,18 @@ export const EditorContextProvider = (props: EditorContextProps) => {
       timing: Array<number>(vi.frames)
         .fill(0)
         .map((_, i) => i * (1 / vi.fps)),
-      label: Array<number>(vi.frames).fill(-1),
+      label: {
+        0: Array<EditorLabelExp>(vi.frames).fill(EditorLabelNotLabelled),
+        1: Array<EditorLabelExp>(vi.frames).fill(EditorLabelNotLabelled),
+      },
     });
   };
 
   const reset = () => {
-    setVideoInfo({
-      duration: 0,
-      fps: 0,
-      frames: 0,
-    });
-    setLabelData({
-      timing: [],
-      label: [],
-    });
-    setSelection([]);
-    setLastLabeled(-1);
+    setVideoInfo(EditorContextDefault.videoInfo);
+    setLabelData(EditorContextDefault.labelData);
+    setSelection(EditorContextDefault.selection);
+    setLastLabeled(EditorContextDefault.lastLabeled);
     setIsAnalyzed(false);
     setBannerInternal('');
     banners.current = defaultBanners;
@@ -154,7 +206,7 @@ export const EditorContextProvider = (props: EditorContextProps) => {
     calcBanner();
   };
 
-  const forceSetLabelData = (timings: number[], xlabel: number[]) => {
+  const forceSetLabelData = (timings: number[], xlabel: EditorLabelContent) => {
     setLabelData({
       timing: timings,
       label: xlabel,

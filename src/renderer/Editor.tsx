@@ -39,13 +39,15 @@ const Editor = () => {
       <EditorVideoProgress player={player.current} />
       <EditorVideoControl
         player={player.current}
+        selecto={selecto.current}
         currentFrame={progress.currentFrame}
         style={{
           marginTop: '1rem',
         }}
       />
       <EditorLabelControl
-        selectoRef={selecto}
+        selecto={selecto.current}
+        track={0}
         currentFrame={progress.currentFrame}
         style={{
           marginTop: '1rem',
@@ -54,6 +56,11 @@ const Editor = () => {
       <EditorLabelVisualizer
         currentFrame={progress.currentFrame}
         selectoRef={selecto}
+      />
+      <EditorLabelControl
+        selecto={selecto.current}
+        track={1}
+        currentFrame={progress.currentFrame}
       />
       <Divider light style={{ margin: '12px 0' }} />
       <EditorBanner />

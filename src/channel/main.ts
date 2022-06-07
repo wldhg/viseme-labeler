@@ -6,6 +6,11 @@ import fs from 'fs';
 import { BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import ffmpeg from 'fluent-ffmpeg';
 import { getFilesRecursively, Hermes } from './shared';
+import {
+  EditorLabelContent,
+  EditorLabelNotLabelled,
+  EditorLabelTracks,
+} from '../context/editor';
 
 export default (
   getHermes: () => Promise<{ hermes: Hermes; mainWindow: BrowserWindow }>
@@ -90,10 +95,14 @@ export default (
     shell.openExternal(url);
   });
 
-  ipcMain.on('viseme-save', (_, [filename, timelines, visemes]) => {
+  ipcMain.on('viseme-save', (_, [filename, _timelines, _visemes]) => {
+    const timelines = _timelines as number[];
+    const visemes = _visemes as EditorLabelContent;
     let fileContent = '';
     for (let i = 0; i < timelines.length; i += 1) {
-      fileContent += `${timelines[i]},${visemes[i]}\n`;
+      fileContent += `${timelines[i]},${EditorLabelTracks.map(
+        (t) => visemes[t][i]
+      ).join(',')}\n`;
     }
     fs.writeFileSync(filename, fileContent, { encoding: 'utf8' });
   });
@@ -102,9 +111,15 @@ export default (
     const fileContent = fs.readFileSync(filename, 'utf8');
     const lines = fileContent
       .split('\n')
-      .filter((line) => line.indexOf(',') > 0);
-    const timelines = lines.map((line) => line.split(',')[0]);
-    const visemes = lines.map((line) => line.split(',')[1]);
+      .filter((line) => (line.match(/,/g) || []).length === 2);
+    const timelines: number[] = lines.map((line) =>
+      Number.parseFloat(line.split(',')[0])
+    );
+    const visemesL: string[][] = lines.map((line) => line.split(',').slice(1));
+    const visemes: EditorLabelContent = {
+      0: visemesL.map((v) => v[0] || EditorLabelNotLabelled),
+      1: visemesL.map((v) => v[1] || EditorLabelNotLabelled),
+    };
     getHermes()
       .then(({ hermes }) => {
         hermes('viseme-loaded', timelines, visemes);

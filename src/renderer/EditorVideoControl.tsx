@@ -1,17 +1,24 @@
 import { useContext } from 'react';
 import { Button, Stack } from '@mui/material';
 import { PlayArrow, Pause } from '@mui/icons-material';
-import EditorContext from '../context/editor';
+import Selecto from 'react-selecto';
+import EditorContext, { EditorContextDefault } from '../context/editor';
 
 type EditorVideoControlProps = {
   player: HTMLVideoElement | null;
   currentFrame: number;
+  selecto: Selecto | null;
   style?: React.CSSProperties;
 };
 
 const EditorVideoControl = (props: EditorVideoControlProps) => {
-  const { player, currentFrame, style } = props;
+  const { player, currentFrame, style, selecto } = props;
   const ed = useContext(EditorContext);
+
+  const emptySelection = () => {
+    ed.setSelection(EditorContextDefault.selection);
+    selecto?.setSelectedTargets([]);
+  };
 
   return (
     <Stack spacing={1} direction="row" style={style}>
@@ -28,7 +35,7 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         variant="outlined"
         onClick={() => {
           if (player) {
-            ed.setSelection([]);
+            emptySelection();
             if (player.paused) {
               player.play();
             } else {
@@ -44,7 +51,7 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         variant="outlined"
         onClick={() => {
           if (player) {
-            ed.setSelection([]);
+            emptySelection();
             player.currentTime = (currentFrame - 1) / ed.videoInfo.fps;
           }
         }}
@@ -56,7 +63,7 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         variant="outlined"
         onClick={() => {
           if (player) {
-            ed.setSelection([]);
+            emptySelection();
             const seekTime = (currentFrame + 1) / ed.videoInfo.fps;
             setTimeout(() => {
               if (player) {
@@ -75,7 +82,7 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         variant="outlined"
         onClick={() => {
           if (player) {
-            ed.setSelection([]);
+            emptySelection();
             player.currentTime -= 5;
           }
         }}
@@ -87,7 +94,7 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         variant="outlined"
         onClick={() => {
           if (player) {
-            ed.setSelection([]);
+            emptySelection();
             player.currentTime += 5;
           }
         }}
@@ -99,7 +106,7 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         variant="text"
         onClick={() => {
           if (player) {
-            ed.setSelection([]);
+            emptySelection();
             player.currentTime = 0;
           }
         }}
@@ -111,7 +118,7 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         variant="text"
         onClick={() => {
           if (player) {
-            ed.setSelection([]);
+            emptySelection();
             player.currentTime = ed.videoInfo.duration;
           }
         }}
