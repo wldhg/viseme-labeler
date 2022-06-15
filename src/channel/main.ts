@@ -17,8 +17,8 @@ import {
   EditorLabelTracks,
 } from '../context/editor';
 
-ffmpeg.setFfmpegPath(ffmpegi.path.replace('app.asar', 'app.asar.unpacked'));
-ffmpeg.setFfprobePath(ffprobei.path.replace('app.asar', 'app.asar.unpacked'));
+ffmpeg.setFfmpegPath(ffmpegi.path);
+ffmpeg.setFfprobePath(ffprobei.path);
 
 export default (
   getHermes: () => Promise<{ hermes: Hermes; mainWindow: BrowserWindow }>
