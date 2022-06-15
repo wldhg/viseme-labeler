@@ -9,7 +9,6 @@ import ffmpegi from '@ffmpeg-installer/ffmpeg';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import ffprobei from '@ffprobe-installer/ffprobe';
-import cmde from 'command-exists';
 import { getFilesRecursively, Hermes } from './shared';
 import {
   EditorLabelContent,
@@ -17,8 +16,8 @@ import {
   EditorLabelTracks,
 } from '../context/editor';
 
-ffmpeg.setFfmpegPath(ffmpegi.path);
-ffmpeg.setFfprobePath(ffprobei.path);
+ffmpeg.setFfmpegPath(ffmpegi.path.replace('app.asar', 'app.asar.unpacked'));
+ffmpeg.setFfprobePath(ffprobei.path.replace('app.asar', 'app.asar.unpacked'));
 
 export default (
   getHermes: () => Promise<{ hermes: Hermes; mainWindow: BrowserWindow }>
@@ -71,45 +70,6 @@ export default (
         })
         .run();
     });
-  });
-
-  ipcMain.on('ffmpeg-bincheck', () => {
-    const chkFFMPEG = new Promise((resolve) => {
-      cmde('ffmpeg', (err, exists) => {
-        if (err) {
-          throw new Error(err);
-        }
-        resolve(exists);
-      });
-    });
-    const chkFFPROBE = new Promise((resolve) => {
-      cmde('ffprobe', (err, exists) => {
-        if (err) {
-          throw new Error(err);
-        }
-        resolve(exists);
-      });
-    });
-
-    Promise.all([chkFFMPEG, chkFFPROBE])
-      .then(([ffmpegExists, ffprobeExists]) => {
-        getHermes()
-          .then(({ hermes }) => {
-            hermes(
-              'ffmpeg-binchecked',
-              ffmpegExists || ffmpegi.path !== '',
-              ffprobeExists || ffprobei.path !== ''
-            );
-            console.log(`ffmpeg: ${ffmpegExists}`);
-            console.log(`ffprobe: ${ffprobeExists}`);
-            console.log(`ffmpegi: ${ffmpegi.path}`);
-            console.log(`ffprobei: ${ffprobei.path}`);
-            return null;
-          })
-          .catch(console.error);
-        return null;
-      })
-      .catch(console.error);
   });
 
   ipcMain.on('dir-select', () => {

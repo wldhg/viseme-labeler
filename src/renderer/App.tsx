@@ -14,7 +14,6 @@ import {
 import GlobalContext, { GlobalContextProvider } from '../context/global';
 import DialogContext, { DialogContextProvider } from '../context/dialog';
 import { EditorContextProvider } from '../context/editor';
-import { FFMPEGContextProvider } from '../context/ffmpeg';
 
 import './App.scss';
 import AppDialog from './AppDialog';
@@ -108,9 +107,7 @@ const AppMain = () => {
               <>
                 <Typography paragraph>{bodyText}</Typography>
                 <Divider />
-                <FFMPEGContextProvider>
-                  <AppNotice />
-                </FFMPEGContextProvider>
+                <AppNotice />
                 <Divider />
                 <Typography paragraph style={{ marginTop: '12px' }}>
                   &copy; 2022 POSTECH AIoT Laboratory.
