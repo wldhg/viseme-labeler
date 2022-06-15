@@ -9,11 +9,11 @@ const AppNotice = () => {
   const checkFFMPEG = () => {
     if (!isOnChecking) {
       setIsOnChecking(true);
-      window.electron.ipcRenderer.once('ffmpeg-binchecked', (mpeg, probe) => {
+      window.electron?.ipcRenderer.once('ffmpeg-binchecked', (mpeg, probe) => {
         ffmpeg.setChecked(mpeg as boolean, probe as boolean);
         setIsOnChecking(false);
       });
-      window.electron.ipcRenderer.sendMessage('ffmpeg-bincheck', []);
+      window.electron?.ipcRenderer.sendMessage('ffmpeg-bincheck', []);
     }
   };
 
