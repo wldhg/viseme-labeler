@@ -76,6 +76,10 @@ $viseme-selected: yellow;
       outline: 1px solid $viseme-selected;
     }
 
+    &[data-strongtick='true'] {
+      filter: brightness(2);
+    }
+
     &[data-track='0'][data-timeline]:not([data-timeline='']) {
       &::before {
         content: attr(data-timeline);
@@ -125,7 +129,7 @@ $viseme-selected: yellow;
     }
 
     span {
-      font-family: 'Inconsolata', monospace;
+      font-family: 'Nanum Gothic Coding', monospace;
       font-weight: 900;
       position: relative;
       width: 100%;
@@ -136,8 +140,8 @@ $viseme-selected: yellow;
       &::after {
         position: absolute;
         right: 1px;
-        text-shadow: black 0 0 8px;
-        width: 5ex;
+        text-shadow: black 0 0 8px, black 0 0 8px, black 0 0 8px;
+        width: 7em;
         text-align: right;
         content: var(--label-content);
         top: calc(2px + var(--label-margin) * 1px);

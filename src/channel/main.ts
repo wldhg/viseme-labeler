@@ -118,7 +118,6 @@ export default (
     const visemesL: string[][] = lines.map((line) => line.split(',').slice(1));
     const visemes: EditorLabelContent = {
       0: visemesL.map((v) => v[0] || EditorLabelNotLabelled),
-      1: visemesL.map((v) => v[1] || EditorLabelNotLabelled),
     };
     getHermes()
       .then(({ hermes }) => {

@@ -148,7 +148,7 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
             EditorLabelControlVisemeButtonVariantMap[visemes.def[visemeID].type]
           );
         }
-        return <></>;
+        return null;
       })}
       <Stack spacing={1} direction="column">
         <Stack spacing={1} direction="row">
@@ -167,7 +167,7 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
                 ]
               );
             }
-            return <></>;
+            return null;
           })}
         </Stack>
         <Stack spacing={1} direction="row">
