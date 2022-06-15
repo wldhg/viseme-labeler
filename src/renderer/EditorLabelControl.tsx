@@ -1,6 +1,7 @@
 import { useContext } from 'react';
 import { Stack, Button, Tooltip } from '@mui/material';
 import { Save, FormatPaint } from '@mui/icons-material';
+import { useHotkeys } from 'react-hotkeys-hook';
 import Selecto from 'react-selecto';
 import GlobalContext from '../context/global';
 import EditorContext, {
@@ -79,6 +80,31 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
     selecto?.setSelectedTargets(newSelected);
   };
 
+  const getVisemeButtonClickFn = (visemeID: EditorLabelIDExp) => {
+    return () => {
+      if (ed.selection[track].length === 0) {
+        const sell = currentFrame - ed.lastLabeled[track] - 1;
+        if (sell <= 0) {
+          return;
+        }
+        const selec = structuredClone(
+          EditorContextDefault.selection
+        ) as MutableEditorSelection;
+        selec[track] = Array(sell)
+          .fill(0)
+          .map((_, i) => {
+            return ed.lastLabeled[track] + i + 1;
+          });
+        registerSelectionToSelecto(selec);
+        ctx.setDoesCurrentItemHasChange(true);
+        ed.selectAndLabel(selec, visemeID);
+      } else {
+        ctx.setDoesCurrentItemHasChange(true);
+        ed.label(visemeID);
+      }
+    };
+  };
+
   const getVisemeButton = (
     visemeID: EditorLabelIDExp,
     color: EditorLabelControlVisemeButtonColor,
@@ -91,28 +117,7 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
         variant={variant}
         style={EditorLabelControlVisemeButtonStyle}
         size="small"
-        onClick={() => {
-          if (ed.selection[track].length === 0) {
-            const sell = currentFrame - ed.lastLabeled[track] - 1;
-            if (sell <= 0) {
-              return;
-            }
-            const selec = structuredClone(
-              EditorContextDefault.selection
-            ) as MutableEditorSelection;
-            selec[track] = Array(sell)
-              .fill(0)
-              .map((_, i) => {
-                return ed.lastLabeled[track] + i + 1;
-              });
-            registerSelectionToSelecto(selec);
-            ctx.setDoesCurrentItemHasChange(true);
-            ed.selectAndLabel(selec, visemeID);
-          } else {
-            ctx.setDoesCurrentItemHasChange(true);
-            ed.label(visemeID);
-          }
-        }}
+        onClick={getVisemeButtonClickFn(visemeID)}
       >
         {visemes.def[visemeID].disp}
       </Button>
@@ -129,6 +134,16 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
     }
     return vbutton;
   };
+
+  for (let i = 0; i < visemes.allIDs.length; i += 1) {
+    if (visemes.def[visemes.allIDs[i]]?.keybind) {
+      // eslint-disable-next-line react-hooks/rules-of-hooks
+      useHotkeys(
+        visemes.def[visemes.allIDs[i]].keybind as string,
+        getVisemeButtonClickFn(visemes.allIDs[i])
+      );
+    }
+  }
 
   return (
     <Stack spacing={1} direction="row" style={style}>

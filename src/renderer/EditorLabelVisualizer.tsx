@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useRef } from 'react';
 import Selecto, { OnSelect } from 'react-selecto';
 import EditorLabelVisualizerTrack from './EditorLabelVisualizerTrack';
 import EditorContext, {
@@ -16,6 +16,7 @@ type EditorLabelVisualizerProps = {
 const EditorLabelVisualizer = (props: EditorLabelVisualizerProps) => {
   const { currentFrame, selectoRef } = props;
   const ed = useContext(EditorContext);
+  const wrap = useRef<HTMLDivElement>(null);
 
   const onSelect = (sel: OnSelect) => {
     const selectedIdxes = sel.selected.map((e) =>
@@ -46,6 +47,14 @@ const EditorLabelVisualizer = (props: EditorLabelVisualizerProps) => {
     <div>
       <div
         id="visemewrap"
+        ref={wrap}
+        onScroll={(e) => {
+          e.preventDefault();
+          if (wrap.current) {
+            wrap.current.scrollTo(0, 0);
+          }
+          return false;
+        }}
         style={
           { '--track-cnt': EditorLabelTracks.length } as React.CSSProperties
         }

@@ -13,6 +13,7 @@ export type VisemeDefMap = {
     type: VisemeType;
     disp: string;
     desc?: string;
+    keybind?: string;
   };
 };
 
