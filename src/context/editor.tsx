@@ -7,13 +7,11 @@ export type EditorVideoInfo = {
   readonly frames: number;
 };
 
-export type EditorLabelTrack = 0 | 1;
+export type EditorLabelTrack = 0;
 export type EditorLabelIndex = number;
 export type EditorLabelIDExp = string;
 
-export const EditorLabelTracks: ReadonlyArray<EditorLabelTrack> = [
-  0, 1,
-] as const;
+export const EditorLabelTracks: ReadonlyArray<EditorLabelTrack> = [0] as const;
 
 export type MutableEditorSelection = {
   [key in EditorLabelTrack]: EditorLabelIndex[];
@@ -82,17 +80,14 @@ export const EditorContextDefault: EditorContextT = {
     timing: [],
     label: {
       0: {},
-      1: {},
     },
   },
   selection: {
     0: [],
-    1: [],
   },
   setSelection: (_selection: EditorSelection) => {},
   lastLabeled: {
     0: -1,
-    1: -1,
   },
   label: (_visemeID: EditorLabelIDExp) => {},
   banner: '',
@@ -198,7 +193,6 @@ export const EditorContextProvider = (props: EditorContextProps) => {
         .map((_, i) => i * (1 / vi.fps)),
       label: {
         0: Array<EditorLabelIDExp>(vi.frames).fill(EditorLabelNotLabelled),
-        1: Array<EditorLabelIDExp>(vi.frames).fill(EditorLabelNotLabelled),
       },
     });
   };

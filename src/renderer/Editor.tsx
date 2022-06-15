@@ -64,11 +64,6 @@ const Editor = () => {
             currentFrame={progress.currentFrame}
             selectoRef={selecto}
           />
-          <EditorLabelControl
-            selecto={selecto.current}
-            track={1}
-            currentFrame={progress.currentFrame}
-          />
           <Divider light style={{ margin: '12px 0' }} />
           <EditorBanner />
         </Box>

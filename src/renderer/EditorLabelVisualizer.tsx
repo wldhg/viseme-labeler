@@ -26,14 +26,11 @@ const EditorLabelVisualizer = (props: EditorLabelVisualizerProps) => {
     );
     const selected: MutableEditorSelection = {
       0: [],
-      1: [],
     };
     for (let i = 0; i < selectedIdxes.length; i += 1) {
       if (selectedIdxes[i] !== -1) {
         if (selectedTracks[i] === 0) {
           selected[0].push(selectedIdxes[i]);
-        } else if (selectedTracks[i] === 1) {
-          selected[1].push(selectedIdxes[i]);
         }
       }
     }
