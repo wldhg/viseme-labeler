@@ -7,8 +7,8 @@ const EditorNotice = () => {
     <Stack
       spacing={1}
       style={{
-        fontFamily: '"Nanum Gothic Coding", monospace !important',
-        fontSmooth: 'always !important',
+        fontFamily: '"Nanum Gothic Coding", monospace',
+        fontSmooth: 'always',
       }}
     >
       <h3 className="exception-title">예외 사항</h3>

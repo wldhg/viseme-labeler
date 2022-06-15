@@ -111,7 +111,7 @@ export default (
     const fileContent = fs.readFileSync(filename, 'utf8');
     const lines = fileContent
       .split('\n')
-      .filter((line) => (line.match(/,/g) || []).length === 2);
+      .filter((line) => (line.match(/,/g) || []).length === 1); // Length: track count
     const timelines: number[] = lines.map((line) =>
       Number.parseFloat(line.split(',')[0])
     );

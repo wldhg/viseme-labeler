@@ -183,7 +183,7 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
                 ]
               );
             }
-            return <></>;
+            return null;
           })}
         </Stack>
       </Stack>
