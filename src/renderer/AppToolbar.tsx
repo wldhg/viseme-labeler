@@ -106,7 +106,7 @@ const AppToolbar = () => {
 
   const openComfort = () => {
     window.electron.ipcRenderer.sendMessage('open-url', [
-      'https://youtu.be/xjq-se5UZ-0?t=22',
+      'https://youtu.be/xjq-se5UZ-0?t=43',
     ]);
   };
 
@@ -193,7 +193,7 @@ const AppToolbar = () => {
 
   const openHelp = () => {
     window.electron.ipcRenderer.sendMessage('open-url', [
-      'https://docs.aws.amazon.com/ko_kr/polly/latest/dg/ph-table-korean.html',
+      'https://wldh.notion.site/Viseme-ed252c234e204ffbb2179c0262fcd5f4',
     ]);
   };
 

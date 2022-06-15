@@ -17,6 +17,7 @@ import EditorVideoControl from './EditorVideoControl';
 import EditorLabelControl from './EditorLabelControl';
 import EditorLabelVisualizer from './EditorLabelVisualizer';
 import EditorBanner from './EditorBanner';
+import EditorNotice from './EditorNotice';
 
 const Editor = () => {
   const ed = useContext(EditorContext);
@@ -66,6 +67,8 @@ const Editor = () => {
           />
           <Divider light style={{ margin: '12px 0' }} />
           <EditorBanner />
+          <Divider light style={{ margin: '12px 0' }} />
+          <EditorNotice />
         </Box>
       </Stack>
       <Dialog

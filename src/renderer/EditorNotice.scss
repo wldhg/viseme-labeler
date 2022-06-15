@@ -1,0 +1,34 @@
+@use 'sass:color';
+
+$viseme-unk: #f9a731;
+
+.exception-title {
+  margin-bottom: 0;
+}
+
+.exception-class {
+  margin-bottom: 10px !important;
+}
+
+.exception-list {
+  margin: 0 !important;
+
+  li {
+    margin: 2px 0 !important;
+  }
+}
+
+.exception-strong {
+  font-weight: 700;
+  color: $viseme-unk;
+
+  i.unk-btn-mock {
+    border: 1px solid #{color.adjust($viseme-unk, $alpha: -0.4)};
+    border-radius: 4px;
+    text-decoration: none;
+    font-style: normal;
+    min-width: 30px;
+    display: inline-block;
+    padding: 1.5px 8px;
+  }
+}

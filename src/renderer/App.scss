@@ -6,3 +6,13 @@ body {
   background-color: #191a1d;
   color: white;
 }
+
+kbd {
+  border: 1px solid white;
+  padding: 2px 3px;
+  font-family: 'Inconsolata', monospace;
+  margin: 2px 3px;
+  box-sizing: border-box;
+  line-height: 1.2em;
+  display: inline-block;
+}
