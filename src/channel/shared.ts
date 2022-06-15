@@ -3,6 +3,7 @@ import fs from 'fs';
 export type R2MChannels =
   | 'ffmpeg-probe'
   | 'ffmpeg-convert'
+  | 'ffmpeg-bincheck'
   | 'dir-select'
   | 'open-url'
   | 'viseme-save'
@@ -11,6 +12,7 @@ export type R2MChannels =
 export type M2RChannels =
   | 'ffmpeg-probed'
   | 'ffmpeg-converted'
+  | 'ffmpeg-binchecked'
   | 'dir-selected'
   | 'viseme-loaded';
 

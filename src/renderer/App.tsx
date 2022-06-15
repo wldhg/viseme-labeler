@@ -14,6 +14,7 @@ import {
 import GlobalContext, { GlobalContextProvider } from '../context/global';
 import DialogContext, { DialogContextProvider } from '../context/dialog';
 import { EditorContextProvider } from '../context/editor';
+import { FFMPEGContextProvider } from '../context/ffmpeg';
 
 import './App.scss';
 import AppDialog from './AppDialog';
@@ -21,6 +22,7 @@ import AppEditList from './AppEditList';
 import AppToolbar from './AppToolbar';
 import AppHeader from './AppHeader';
 import Editor from './Editor';
+import AppNotice from './AppNotice';
 
 const drawerWidth = 300;
 const darkTheme = createTheme({
@@ -105,7 +107,12 @@ const AppMain = () => {
             ) : (
               <>
                 <Typography paragraph>{bodyText}</Typography>
-                <Typography paragraph>
+                <Divider />
+                <FFMPEGContextProvider>
+                  <AppNotice />
+                </FFMPEGContextProvider>
+                <Divider />
+                <Typography paragraph style={{ marginTop: '12px' }}>
                   &copy; 2022 POSTECH AIoT Laboratory.
                 </Typography>
               </>

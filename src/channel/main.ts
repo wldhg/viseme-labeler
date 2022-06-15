@@ -5,6 +5,7 @@
 import fs from 'fs';
 import { BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import ffmpeg from 'fluent-ffmpeg';
+import cmde from 'command-exists';
 import { getFilesRecursively, Hermes } from './shared';
 import {
   EditorLabelContent,
@@ -63,6 +64,39 @@ export default (
         })
         .run();
     });
+  });
+
+  ipcMain.on('ffmpeg-bincheck', () => {
+    const chkFFMPEG = new Promise((resolve) => {
+      cmde('ffmpeg', (err, exists) => {
+        if (err) {
+          throw new Error(err);
+        }
+        resolve(exists);
+      });
+    });
+    const chkFFPROBE = new Promise((resolve) => {
+      cmde('ffprobe', (err, exists) => {
+        if (err) {
+          throw new Error(err);
+        }
+        resolve(exists);
+      });
+    });
+
+    Promise.all([chkFFMPEG, chkFFPROBE])
+      .then(([ffmpegExists, ffprobeExists]) => {
+        getHermes()
+          .then(({ hermes }) => {
+            hermes('ffmpeg-binchecked', ffmpegExists, ffprobeExists);
+            console.log(`ffmpeg: ${ffmpegExists}`);
+            console.log(`ffprobe: ${ffprobeExists}`);
+            return null;
+          })
+          .catch(console.error);
+        return null;
+      })
+      .catch(console.error);
   });
 
   ipcMain.on('dir-select', () => {
