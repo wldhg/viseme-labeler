@@ -5,6 +5,10 @@
 import fs from 'fs';
 import { BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import ffmpeg from 'fluent-ffmpeg';
+import ffmpegi from '@ffmpeg-installer/ffmpeg';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import ffprobei from '@ffprobe-installer/ffprobe';
 import cmde from 'command-exists';
 import { getFilesRecursively, Hermes } from './shared';
 import {
@@ -12,6 +16,9 @@ import {
   EditorLabelNotLabelled,
   EditorLabelTracks,
 } from '../context/editor';
+
+ffmpeg.setFfmpegPath(ffmpegi.path.replace('app.asar', 'app.asar.unpacked'));
+ffmpeg.setFfprobePath(ffprobei.path.replace('app.asar', 'app.asar.unpacked'));
 
 export default (
   getHermes: () => Promise<{ hermes: Hermes; mainWindow: BrowserWindow }>
@@ -88,9 +95,15 @@ export default (
       .then(([ffmpegExists, ffprobeExists]) => {
         getHermes()
           .then(({ hermes }) => {
-            hermes('ffmpeg-binchecked', ffmpegExists, ffprobeExists);
+            hermes(
+              'ffmpeg-binchecked',
+              ffmpegExists || ffmpegi.path !== '',
+              ffprobeExists || ffprobei.path !== ''
+            );
             console.log(`ffmpeg: ${ffmpegExists}`);
             console.log(`ffprobe: ${ffprobeExists}`);
+            console.log(`ffmpegi: ${ffmpegi.path}`);
+            console.log(`ffprobei: ${ffprobei.path}`);
             return null;
           })
           .catch(console.error);

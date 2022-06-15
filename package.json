@@ -83,6 +83,8 @@
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",
+    "@ffmpeg-installer/ffmpeg": "^1.1.0",
+    "@ffprobe-installer/ffprobe": "^1.4.1",
     "@mui/icons-material": "^5.8.0",
     "@mui/material": "^5.8.0",
     "command-exists": "^1.2.9",
