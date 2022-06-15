@@ -9,7 +9,7 @@ export type EditorVideoInfo = {
 
 export type EditorLabelTrack = 0 | 1;
 export type EditorLabelIndex = number;
-export type EditorLabelExp = string;
+export type EditorLabelIDExp = string;
 
 export const EditorLabelTracks: ReadonlyArray<EditorLabelTrack> = [
   0, 1,
@@ -24,12 +24,12 @@ export type EditorSelection = {
 
 export type MutableEditorLabelContent = {
   [key in EditorLabelTrack]: {
-    [key: EditorLabelIndex]: EditorLabelExp;
+    [key: EditorLabelIndex]: EditorLabelIDExp;
   };
 };
 export type EditorLabelContent = {
   readonly [key in EditorLabelTrack]: {
-    readonly [key: EditorLabelIndex]: EditorLabelExp;
+    readonly [key: EditorLabelIndex]: EditorLabelIDExp;
   };
 };
 
@@ -58,12 +58,15 @@ export type EditorContextT = {
   readonly selection: EditorSelection;
   setSelection: (selection: EditorSelection) => void;
   readonly lastLabeled: EditorLabelLastIndex;
-  label: (viseme: EditorLabelExp) => void;
+  label: (visemeID: EditorLabelIDExp) => void;
   readonly banner: string;
   setBanner: (bannerCategory: string, banner: string, time?: number) => void;
   readonly isAnalyzed: boolean;
   setIsAnalyzed: (analyzed: boolean) => void;
-  selectAndLabel: (selection: EditorSelection, viseme: EditorLabelExp) => void;
+  selectAndLabel: (
+    selection: EditorSelection,
+    visemeID: EditorLabelIDExp
+  ) => void;
   forceSetLabelData: (timings: number[], labels: EditorLabelContent) => void;
   reset: () => void;
 };
@@ -91,12 +94,15 @@ export const EditorContextDefault: EditorContextT = {
     0: -1,
     1: -1,
   },
-  label: (_viseme: EditorLabelExp) => {},
+  label: (_visemeID: EditorLabelIDExp) => {},
   banner: '',
   setBanner: (_bannerCategory: string, _banner: string, _time?: number) => {},
   isAnalyzed: false,
   setIsAnalyzed: (_analyzed: boolean) => {},
-  selectAndLabel: (_selection: EditorSelection, _viseme: EditorLabelExp) => {},
+  selectAndLabel: (
+    _selection: EditorSelection,
+    _visemeID: EditorLabelIDExp
+  ) => {},
   forceSetLabelData: (_timings: number[], _labels: EditorLabelContent) => {},
   reset: () => {},
 };
@@ -130,7 +136,10 @@ export const EditorContextProvider = (props: EditorContextProps) => {
   const banners = useRef<{ [key: string]: string }>(defaultBanners);
   const bannerAutoRemoval = useRef<{ [key: string]: NodeJS.Timeout }>({});
 
-  const selectAndLabel = (selec: EditorSelection, viseme: EditorLabelExp) => {
+  const selectAndLabel = (
+    selec: EditorSelection,
+    visemeID: EditorLabelIDExp
+  ) => {
     setSelection(selec);
 
     const ll: MutableEditorLabelLastIndex = lastLabeled;
@@ -141,7 +150,7 @@ export const EditorContextProvider = (props: EditorContextProps) => {
         const maxLabel = Math.max(...selec[trackIdx]);
         ll[trackIdx] = maxLabel;
         selec[trackIdx].forEach((i) => {
-          cl[trackIdx][i] = viseme;
+          cl[trackIdx][i] = visemeID;
         });
       }
     });
@@ -153,8 +162,8 @@ export const EditorContextProvider = (props: EditorContextProps) => {
     setLastLabeled(ll);
   };
 
-  const label = (viseme: EditorLabelExp) => {
-    return selectAndLabel(selection, viseme);
+  const label = (visemeID: EditorLabelIDExp) => {
+    return selectAndLabel(selection, visemeID);
   };
 
   const calcBanner = () => {
@@ -188,8 +197,8 @@ export const EditorContextProvider = (props: EditorContextProps) => {
         .fill(0)
         .map((_, i) => i * (1 / vi.fps)),
       label: {
-        0: Array<EditorLabelExp>(vi.frames).fill(EditorLabelNotLabelled),
-        1: Array<EditorLabelExp>(vi.frames).fill(EditorLabelNotLabelled),
+        0: Array<EditorLabelIDExp>(vi.frames).fill(EditorLabelNotLabelled),
+        1: Array<EditorLabelIDExp>(vi.frames).fill(EditorLabelNotLabelled),
       },
     });
   };

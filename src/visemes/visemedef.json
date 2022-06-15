@@ -1,17 +1,112 @@
 {
   "visemes": {
-    "-": "empty_str",
-    "pm": "typea",
-    "s": "typea",
-    "sh": "typeb",
-    "uu": "typec",
-    "eu": "typec",
-    "ee": "typec",
-    "eo": "typec",
-    "oo": "typec",
-    "aa": "typec",
-    "ii": "typec",
-    "jy": "typed",
-    "ww": "typed"
+    "em": {
+      "type": "empty_str",
+      "disp": "-",
+      "desc": "공백/노이즈"
+    },
+    "un": {
+      "type": "unknown",
+      "disp": "??",
+      "desc": "복합 (명시된 예외에만 사용)"
+    },
+    "pm": {
+      "type": "typea",
+      "disp": "ㅁ,ㅂ,ㅃ,ㅍ"
+    },
+    "aa": {
+      "type": "typeb",
+      "disp": "ㅏ"
+    },
+    "jy+aa": {
+      "type": "typeb",
+      "disp": "ㅑ"
+    },
+    "eo": {
+      "type": "typeb",
+      "disp": "ㅓ"
+    },
+    "jy+eo": {
+      "type": "typeb",
+      "disp": "ㅕ"
+    },
+    "oo": {
+      "type": "typeb",
+      "disp": "ㅗ"
+    },
+    "jy+oo": {
+      "type": "typeb",
+      "disp": "ㅛ"
+    },
+    "uu": {
+      "type": "typeb",
+      "disp": "ㅜ"
+    },
+    "jy+uu": {
+      "type": "typeb",
+      "disp": "ㅠ"
+    },
+    "eu": {
+      "type": "typeb",
+      "disp": "ㅡ"
+    },
+    "ii": {
+      "type": "typeb",
+      "disp": "ㅣ"
+    },
+    "ee": {
+      "type": "typec",
+      "disp": "ㅐ,ㅔ"
+    },
+    "jy+ee": {
+      "type": "typec",
+      "disp": "ㅒ,ㅖ"
+    },
+    "ww+aa": {
+      "type": "typec",
+      "disp": "ㅘ"
+    },
+    "ww+ee": {
+      "type": "typec",
+      "disp": "ㅙ,ㅚ,ㅞ"
+    },
+    "ww+eo": {
+      "type": "typec",
+      "disp": "ㅝ"
+    },
+    "ww+ii": {
+      "type": "typec",
+      "disp": "ㅟ"
+    },
+    "eu+jy": {
+      "type": "typec",
+      "disp": "ㅢ[y]",
+      "desc": "첫 음소가 A타입이 아닌 음절의 'ㅢ'"
+    },
+    "eu+ii": {
+      "type": "typec",
+      "disp": "ㅢ[i]",
+      "desc": "첫 음소가 A타입인 음절의 'ㅢ'"
+    }
+  },
+  "types": {
+    "empty_str": {
+      "disp": "공백"
+    },
+    "typea": {
+      "disp": "자음"
+    },
+    "typeb": {
+      "disp": "기본모음"
+    },
+    "typec": {
+      "disp": "이중모음"
+    },
+    "typed": {
+      "disp": "!!사용하지않음!!"
+    },
+    "unknown": {
+      "disp": "알수없음"
+    }
   }
 }

@@ -7,6 +7,7 @@ $viseme-a: #98c9f8;
 $viseme-b: #ce8fd8;
 $viseme-c: #67be69;
 $viseme-d: #f9a731;
+$viseme-unk: #f9a731;
 $viseme-no: white;
 $viseme-others: red;
 $viseme-selected: yellow;
@@ -113,6 +114,10 @@ $viseme-selected: yellow;
 
     &[data-type='typed'] {
       background-color: $viseme-d;
+    }
+
+    &[data-type='unknown'] {
+      background-color: $viseme-unk;
     }
 
     &[data-state='noise'] {

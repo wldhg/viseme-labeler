@@ -28,8 +28,10 @@ const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
         let state = 'labelled';
         if (ed.labelData.label[track][i] === EditorLabelNotLabelled) {
           state = 'unlabelled';
-        } else if (ed.labelData.label[track][i] === visemes.emptyStr) {
+        } else if (ed.labelData.label[track][i] === visemes.emptyStrID) {
           state = 'noise';
+        } else if (ed.labelData.label[track][i] === visemes.unknownStrID) {
+          state = 'unknown';
         }
         return (
           <div
@@ -45,7 +47,9 @@ const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
                 : ''
             }
             data-state={state}
-            data-type={visemes.type[ed.labelData.label[track][i]] || 'notype'}
+            data-type={
+              visemes.def[ed.labelData.label[track][i]]?.type || 'notype'
+            }
             key={`visemelabeller-${track}-${ed.videoInfo.duration}-${t}`}
             className="visemeblock"
           >
@@ -53,16 +57,16 @@ const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
               style={
                 {
                   '--label-margin':
-                    visemes.all.indexOf(ed.labelData.label[track][i]) * 2,
+                    visemes.allIDs.indexOf(ed.labelData.label[track][i]) * 2,
                   '--label-content':
                     ed.labelData.label[track][i] !== EditorLabelNotLabelled &&
-                    ed.labelData.label[track][i] !== visemes.emptyStr &&
+                    ed.labelData.label[track][i] !== visemes.emptyStrID &&
                     (ed.labelData.timing.length - 1 === i ||
                       (ed.labelData.timing.length - 1 >= i + 1 &&
                         ed.labelData.label[track][i + 1] !==
                           ed.labelData.label[track][i]))
                       ? ''
-                      : `_${ed.labelData.label[track][i]}`,
+                      : visemes.def[ed.labelData.label[track][i]]?.disp,
                 } as React.CSSProperties
               }
             />

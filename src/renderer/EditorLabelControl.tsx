@@ -7,7 +7,7 @@ import EditorContext, {
   EditorLabelTrack,
   EditorContextDefault,
   MutableEditorSelection,
-  EditorLabelExp,
+  EditorLabelIDExp,
   EditorLabelTracks,
   EditorLabelNotLabelled,
 } from '../context/editor';
@@ -23,10 +23,10 @@ type EditorLabelControlVisemeButtonColor =
 type EditorLabelControlVisemeButtonVariant = 'outlined' | 'contained';
 
 const EditorLabelControlVisemeButtonStyle = {
-  fontFamily: 'Inconsolata, monospace',
+  fontFamily: '"Nanum Gothic Coding", monospace',
   minWidth: '30px',
   fontWeight: 800,
-  fontSize: '1.2em',
+  fontSize: '1em',
   padding: '0 8px',
 };
 
@@ -37,6 +37,7 @@ const EditorLabelControlVisemeButtonColorMap: {
   typeb: 'secondary',
   typec: 'success',
   typed: 'warning',
+  unknown: 'warning',
   empty_str: 'info',
 };
 
@@ -47,6 +48,7 @@ const EditorLabelControlVisemeButtonVariantMap: {
   typeb: 'contained',
   typec: 'contained',
   typed: 'contained',
+  unknown: 'outlined',
   empty_str: 'outlined',
 };
 
@@ -78,13 +80,13 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
   };
 
   const getVisemeButton = (
-    viseme: EditorLabelExp,
+    visemeID: EditorLabelIDExp,
     color: EditorLabelControlVisemeButtonColor,
     variant: EditorLabelControlVisemeButtonVariant
   ) => {
     const vbutton = (
       <Button
-        key={`visemelabelbutton-${viseme}`}
+        key={`visemelabelbutton-${visemeID}`}
         color={color}
         variant={variant}
         style={EditorLabelControlVisemeButtonStyle}
@@ -105,19 +107,22 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
               });
             registerSelectionToSelecto(selec);
             ctx.setDoesCurrentItemHasChange(true);
-            ed.selectAndLabel(selec, viseme);
+            ed.selectAndLabel(selec, visemeID);
           } else {
             ctx.setDoesCurrentItemHasChange(true);
-            ed.label(viseme);
+            ed.label(visemeID);
           }
         }}
       >
-        {viseme}
+        {visemes.def[visemeID].disp}
       </Button>
     );
-    if (viseme === visemes.emptyStr) {
+    if (visemes.def[visemeID].desc) {
       return (
-        <Tooltip title="Empty" key={`visemelabelbutton-tt-${viseme}`}>
+        <Tooltip
+          title={visemes.def[visemeID].desc || '!ERROR!'}
+          key={`visemelabelbutton-tt-${visemeID}`}
+        >
           {vbutton}
         </Tooltip>
       );
@@ -135,13 +140,53 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
       >
         Track {track} :{' '}
       </span>
-      {visemes.all.map((viseme) =>
-        getVisemeButton(
-          viseme,
-          EditorLabelControlVisemeButtonColorMap[visemes.type[viseme]],
-          EditorLabelControlVisemeButtonVariantMap[visemes.type[viseme]]
-        )
-      )}
+      {visemes.allIDs.map((visemeID) => {
+        if (visemes.def[visemeID].type.indexOf('type') === -1) {
+          return getVisemeButton(
+            visemeID,
+            EditorLabelControlVisemeButtonColorMap[visemes.def[visemeID].type],
+            EditorLabelControlVisemeButtonVariantMap[visemes.def[visemeID].type]
+          );
+        }
+        return <></>;
+      })}
+      <Stack spacing={1} direction="column">
+        <Stack spacing={1} direction="row">
+          {visemes.allIDs.map((visemeID) => {
+            if (
+              visemes.def[visemeID].type === 'typea' ||
+              visemes.def[visemeID].type === 'typeb'
+            ) {
+              return getVisemeButton(
+                visemeID,
+                EditorLabelControlVisemeButtonColorMap[
+                  visemes.def[visemeID].type
+                ],
+                EditorLabelControlVisemeButtonVariantMap[
+                  visemes.def[visemeID].type
+                ]
+              );
+            }
+            return <></>;
+          })}
+        </Stack>
+        <Stack spacing={1} direction="row">
+          {visemes.allIDs.map((visemeID) => {
+            if (visemes.def[visemeID].type === 'typec') {
+              return getVisemeButton(
+                visemeID,
+                EditorLabelControlVisemeButtonColorMap[
+                  visemes.def[visemeID].type
+                ],
+                EditorLabelControlVisemeButtonVariantMap[
+                  visemes.def[visemeID].type
+                ]
+              );
+            }
+            return <></>;
+          })}
+        </Stack>
+      </Stack>
       <Tooltip title="Fill Empty">
         <Button
           style={{
@@ -174,7 +219,7 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
               ) as MutableEditorSelection;
               selec[track] = toBeFilled;
               registerSelectionToSelecto(selec);
-              ed.selectAndLabel(selec, visemes.emptyStr);
+              ed.selectAndLabel(selec, visemes.emptyStrID);
             }
           }}
         >
