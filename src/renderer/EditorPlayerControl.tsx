@@ -5,15 +5,16 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import Selecto from 'react-selecto';
 import EditorContext, { EditorContextDefault } from '../context/editor';
 
-type EditorVideoControlProps = {
-  player: HTMLVideoElement | null;
+type EditorPlayerControlProps = {
+  videoPlayer: HTMLVideoElement | null;
+  audioPlayer: HTMLAudioElement | null;
   currentFrame: number;
   selecto: Selecto | null;
   style?: React.CSSProperties;
 };
 
-const EditorVideoControl = (props: EditorVideoControlProps) => {
-  const { player, currentFrame, style, selecto } = props;
+const EditorPlayerControl = (props: EditorPlayerControlProps) => {
+  const { videoPlayer, audioPlayer, currentFrame, style, selecto } = props;
   const ed = useContext(EditorContext);
 
   const emptySelection = () => {
@@ -22,48 +23,54 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
   };
 
   const playPause = () => {
-    if (player) {
+    if (videoPlayer) {
       emptySelection();
-      if (player.paused) {
-        player.play();
+      if (videoPlayer.paused) {
+        videoPlayer.play();
       } else {
-        player.pause();
+        videoPlayer.pause();
       }
     }
   };
 
   const back1F = () => {
-    if (player) {
+    if (videoPlayer && audioPlayer) {
       emptySelection();
-      player.currentTime = (currentFrame - 1) / ed.videoInfo.fps;
+      const currentTime = (currentFrame - 1) / ed.videoInfo.fps;
+      videoPlayer.currentTime = currentTime;
+      audioPlayer.currentTime = currentTime;
     }
   };
 
   const go1F = () => {
-    if (player) {
+    if (videoPlayer && audioPlayer) {
+      audioPlayer.currentTime = videoPlayer.currentTime;
       emptySelection();
       const seekTime = (currentFrame + 1) / ed.videoInfo.fps;
       setTimeout(() => {
-        if (player) {
-          player.pause();
-          player.currentTime = seekTime;
+        if (audioPlayer) {
+          audioPlayer.pause();
+          audioPlayer.currentTime = seekTime;
         }
-      }, (1 / ed.videoInfo.fps) * 1000);
-      player.play();
+      }, (1 / ed.videoInfo.fps) * 900);
+      audioPlayer.play();
+      videoPlayer.currentTime = seekTime;
     }
   };
 
   const back5s = () => {
-    if (player) {
+    if (videoPlayer && audioPlayer) {
       emptySelection();
-      player.currentTime -= 5;
+      videoPlayer.currentTime -= 5;
+      audioPlayer.currentTime = videoPlayer.currentTime;
     }
   };
 
   const go5s = () => {
-    if (player) {
+    if (videoPlayer && audioPlayer) {
       emptySelection();
-      player.currentTime += 5;
+      videoPlayer.currentTime += 5;
+      audioPlayer.currentTime = videoPlayer.currentTime;
     }
   };
 
@@ -85,7 +92,7 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
       </span>
       <Tooltip title="Space">
         <Button size="small" variant="outlined" onClick={playPause}>
-          {player && player.paused ? <PlayArrow /> : <Pause />}
+          {videoPlayer && videoPlayer.paused ? <PlayArrow /> : <Pause />}
         </Button>
       </Tooltip>
       <Tooltip title="< key">
@@ -112,9 +119,10 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         size="small"
         variant="text"
         onClick={() => {
-          if (player) {
+          if (videoPlayer && audioPlayer) {
             emptySelection();
-            player.currentTime = 0;
+            videoPlayer.currentTime = 0;
+            audioPlayer.currentTime = 0;
           }
         }}
       >
@@ -124,9 +132,10 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
         size="small"
         variant="text"
         onClick={() => {
-          if (player) {
+          if (videoPlayer && audioPlayer) {
             emptySelection();
-            player.currentTime = ed.videoInfo.duration;
+            videoPlayer.currentTime = ed.videoInfo.duration;
+            audioPlayer.currentTime = ed.videoInfo.duration;
           }
         }}
       >
@@ -136,8 +145,8 @@ const EditorVideoControl = (props: EditorVideoControlProps) => {
   );
 };
 
-EditorVideoControl.defaultProps = {
+EditorPlayerControl.defaultProps = {
   style: {},
 };
 
-export default EditorVideoControl;
+export default EditorPlayerControl;

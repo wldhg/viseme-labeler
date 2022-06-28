@@ -10,10 +10,10 @@ import {
 } from '@mui/material';
 import Selecto from 'react-selecto';
 import EditorContext from '../context/editor';
-import EditorVideoInfo from './EditorVideoInfo';
-import EditorVideoProgress from './EditorVideoProgress';
-import EditorVideoPlayer from './EditorVideoPlayer';
-import EditorVideoControl from './EditorVideoControl';
+import EditorPlayerInfo from './EditorPlayerInfo';
+import EditorPlayerProgress from './EditorPlayerProgress';
+import EditorPlayer from './EditorPlayer';
+import EditorPlayerControl from './EditorPlayerControl';
 import EditorLabelControl from './EditorLabelControl';
 import EditorLabelVisualizer from './EditorLabelVisualizer';
 import EditorBanner from './EditorBanner';
@@ -23,8 +23,9 @@ const Editor = () => {
   const ed = useContext(EditorContext);
 
   const selecto = useRef<Selecto>(null);
-  const player = useRef<HTMLVideoElement>(null);
-  const [progress, setProgress] = useState<EditorVideoProgressInfo>({
+  const videoPlayer = useRef<HTMLVideoElement>(null);
+  const audioPlayer = useRef<HTMLAudioElement>(null);
+  const [progress, setProgress] = useState<EditorPlayerProgressInfo>({
     currentTime: 0,
     currentFrame: 0,
   });
@@ -32,8 +33,9 @@ const Editor = () => {
   return (
     <>
       <Stack direction="row" spacing={4}>
-        <EditorVideoPlayer
-          playerRef={player}
+        <EditorPlayer
+          videoPlayerRef={videoPlayer}
+          audioPlayerRef={audioPlayer}
           setProgress={setProgress}
           style={{
             width: 'auto',
@@ -42,11 +44,12 @@ const Editor = () => {
           }}
         />
         <Box>
-          <EditorVideoInfo currentFrame={progress.currentFrame} />
+          <EditorPlayerInfo currentFrame={progress.currentFrame} />
           <Divider light style={{ margin: '12px 0' }} />
-          <EditorVideoProgress player={player.current} />
-          <EditorVideoControl
-            player={player.current}
+          <EditorPlayerProgress player={videoPlayer.current} />
+          <EditorPlayerControl
+            videoPlayer={videoPlayer.current}
+            audioPlayer={audioPlayer.current}
             selecto={selecto.current}
             currentFrame={progress.currentFrame}
             style={{

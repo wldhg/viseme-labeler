@@ -2,11 +2,11 @@ import { useContext } from 'react';
 import { Breadcrumbs, Card } from '@mui/material';
 import EditorContext from '../context/editor';
 
-type EditorVideoInfoProps = {
+type EditorPlayerInfoProps = {
   currentFrame: number;
 };
 
-const EditorVideoInfo = (props: EditorVideoInfoProps) => {
+const EditorPlayerInfo = (props: EditorPlayerInfoProps) => {
   const ed = useContext(EditorContext);
   const { currentFrame } = props;
 
@@ -21,4 +21,4 @@ const EditorVideoInfo = (props: EditorVideoInfoProps) => {
     </Card>
   );
 };
-export default EditorVideoInfo;
+export default EditorPlayerInfo;

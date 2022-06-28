@@ -4,29 +4,35 @@ import { useEffect, useState, useContext, useRef } from 'react';
 import GlobalContext from '../context/global';
 import EditorContext, { EditorLabelContent } from '../context/editor';
 
-type EditorVideoPlayerProps = {
-  playerRef: React.RefObject<HTMLVideoElement>;
-  setProgress: React.Dispatch<React.SetStateAction<EditorVideoProgressInfo>>;
+type EditorPlayerProps = {
+  videoPlayerRef: React.RefObject<HTMLVideoElement>;
+  audioPlayerRef: React.RefObject<HTMLAudioElement>;
+  setProgress: React.Dispatch<React.SetStateAction<EditorPlayerProgressInfo>>;
   style: React.CSSProperties;
 };
 
-const EditorVideoPlayerProgressEventInterval = 10;
+const EditorPlayerProgressEventInterval = 10;
 
-const EditorVideoPlayer = (props: EditorVideoPlayerProps) => {
-  const { playerRef, setProgress, style } = props;
+const EditorPlayer = (props: EditorPlayerProps) => {
+  const { videoPlayerRef, audioPlayerRef, setProgress, style } = props;
   const ctx = useContext(GlobalContext);
   const ed = useContext(EditorContext);
   const [beforeItemIndex, setBeforeItemIndex] = useState<number>(-1);
-  const [playerElement, setPlayerElement] = useState<React.ReactNode>(null);
+  const [videoPlayerElement, setVideoPlayerElement] =
+    useState<React.ReactNode>(null);
+  const [audioPlayerElement, setAudioPlayerElement] =
+    useState<React.ReactNode>(null);
   const videoProgressUpdateInterval = useRef<NodeJS.Timeout>();
   const fpsRef = useRef<number>(1);
 
   const updateProgress = (currentTime = -1) => {
     setProgress({
       currentTime:
-        currentTime === -1 ? playerRef.current?.currentTime || 0 : currentTime,
+        currentTime === -1
+          ? videoPlayerRef.current?.currentTime || 0
+          : currentTime,
       currentFrame: Math.round(
-        (playerRef.current?.currentTime || 0) * fpsRef.current
+        (videoPlayerRef.current?.currentTime || 0) * fpsRef.current
       ),
     });
   };
@@ -40,9 +46,17 @@ const EditorVideoPlayer = (props: EditorVideoPlayerProps) => {
         currentFrame: 0,
       });
       setBeforeItemIndex(ctx.currentItemIndex);
-      setPlayerElement(
+      setAudioPlayerElement(
+        <audio ref={audioPlayerRef}>
+          <source
+            src={ctx.items[ctx.currentItemIndex].srcFilePath}
+            type="audio/mpeg"
+          />
+        </audio>
+      );
+      setVideoPlayerElement(
         <video
-          ref={playerRef}
+          ref={videoPlayerRef}
           src={ctx.items[ctx.currentItemIndex].srcFilePath}
           onPlay={() => {
             if (videoProgressUpdateInterval.current) {
@@ -50,7 +64,7 @@ const EditorVideoPlayer = (props: EditorVideoPlayerProps) => {
             }
             videoProgressUpdateInterval.current = setInterval(() => {
               updateProgress();
-            }, EditorVideoPlayerProgressEventInterval);
+            }, EditorPlayerProgressEventInterval);
             updateProgress();
           }}
           onPause={() => {
@@ -58,6 +72,10 @@ const EditorVideoPlayer = (props: EditorVideoPlayerProps) => {
               clearInterval(videoProgressUpdateInterval.current);
             }
             updateProgress();
+            if (audioPlayerRef.current) {
+              audioPlayerRef.current.currentTime =
+                videoPlayerRef.current?.currentTime || 0;
+            }
           }}
           onSeeked={() => {
             updateProgress();
@@ -106,7 +124,12 @@ const EditorVideoPlayer = (props: EditorVideoPlayerProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ctx.currentItemIndex]);
 
-  return <>{playerElement}</>;
+  return (
+    <>
+      {videoPlayerElement}
+      {audioPlayerElement}
+    </>
+  );
 };
 
-export default EditorVideoPlayer;
+export default EditorPlayer;

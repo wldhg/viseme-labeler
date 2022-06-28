@@ -2,20 +2,20 @@ import { useContext } from 'react';
 import { Stack, LinearProgress } from '@mui/material';
 import EditorContext from '../context/editor';
 
-type EditorVideoProgressProps = {
+type EditorPlayerProgressProps = {
   player: HTMLVideoElement | null;
 };
 
-type EditorVideoProgressTextStyleType = {
+type EditorPlayerProgressTextStyleType = {
   minWidth: string;
   textAlign: 'center';
 };
-const EditorVideoProgressTextStyle: EditorVideoProgressTextStyleType = {
+const EditorPlayerProgressTextStyle: EditorPlayerProgressTextStyleType = {
   minWidth: '11ex',
   textAlign: 'center',
 };
 
-const EditorVideoProgress = (props: EditorVideoProgressProps) => {
+const EditorPlayerProgress = (props: EditorPlayerProgressProps) => {
   const { player } = props;
   const ed = useContext(EditorContext);
 
@@ -27,7 +27,7 @@ const EditorVideoProgress = (props: EditorVideoProgressProps) => {
       direction="row"
       style={{ fontFamily: 'Inconsolata, monospace' }}
     >
-      <span style={EditorVideoProgressTextStyle}>
+      <span style={EditorPlayerProgressTextStyle}>
         {Math.floor(currentTime / 60)}:
         {String(Math.floor(currentTime % 60)).padStart(2, '0')}:
         {String(
@@ -39,7 +39,7 @@ const EditorVideoProgress = (props: EditorVideoProgressProps) => {
         variant="determinate"
         value={(currentTime / ed.videoInfo.duration) * 100}
       />
-      <span style={EditorVideoProgressTextStyle}>
+      <span style={EditorPlayerProgressTextStyle}>
         -{Math.max(0, Math.floor((ed.videoInfo.duration - currentTime) / 60))}:
         {String(
           Math.max(0, Math.floor((ed.videoInfo.duration - currentTime) % 60))
@@ -58,4 +58,4 @@ const EditorVideoProgress = (props: EditorVideoProgressProps) => {
   );
 };
 
-export default EditorVideoProgress;
+export default EditorPlayerProgress;

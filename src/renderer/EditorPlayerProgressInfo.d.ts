@@ -1,4 +1,4 @@
-type EditorVideoProgressInfo = {
+type EditorPlayerProgressInfo = {
   currentTime: number;
   currentFrame: number;
 };
