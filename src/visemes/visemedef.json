@@ -5,10 +5,15 @@
       "disp": "-",
       "desc": "공백/노이즈"
     },
-    "un": {
+    "xx": {
       "type": "unknown",
-      "disp": "??",
+      "disp": "XX",
       "desc": "복합 (명시된 예외에만 사용)"
+    },
+    "ww": {
+      "type": "wrong",
+      "disp": "오류",
+      "desc": "말을 하지 않는데 입이 움직이는 것"
     },
     "pm": {
       "type": "typea",
@@ -80,12 +85,12 @@
     },
     "eu+jy": {
       "type": "typec",
-      "disp": "ㅢ[y]",
+      "disp": "ㅢ",
       "desc": "첫 음소가 A타입이 아닌 음절의 'ㅢ'"
     },
     "eu+ii": {
       "type": "typec",
-      "disp": "ㅢ[i]",
+      "disp": "ㅢ[A]",
       "desc": "첫 음소가 A타입인 음절의 'ㅢ'"
     }
   },
@@ -107,6 +112,9 @@
     },
     "unknown": {
       "disp": "알수없음"
+    },
+    "wrong": {
+      "disp": "잘못된 입모양"
     }
   }
 }

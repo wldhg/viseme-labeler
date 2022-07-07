@@ -1,6 +1,8 @@
 @use 'sass:color';
 
 $viseme-unk: #f9a731;
+$viseme-wrn: #ee3a3d;
+$viseme-suc: #67be69;
 
 .exception-title {
   margin-bottom: 0;
@@ -19,17 +21,34 @@ $viseme-unk: #f9a731;
   }
 }
 
+.btn-mock {
+  border-radius: 4px;
+  text-decoration: none;
+  font-style: normal;
+  min-width: 30px;
+  display: inline-block;
+  padding: 1.5px 8px;
+}
+
 .exception-strong {
   font-weight: 700;
   color: $viseme-unk;
 
   i.unk-btn-mock {
     border: 1px solid #{color.adjust($viseme-unk, $alpha: -0.4)};
-    border-radius: 4px;
-    text-decoration: none;
-    font-style: normal;
-    min-width: 30px;
-    display: inline-block;
-    padding: 1.5px 8px;
   }
+}
+
+i.wrn-btn-mock {
+  font-weight: 700;
+  color: $viseme-wrn;
+  border: 1px solid #{color.adjust($viseme-wrn, $alpha: -0.4)};
+}
+
+i.suc-btn-mock {
+  padding: 1.5px 6px;
+  font-weight: 700;
+  color: #121212;
+  border: 1px solid $viseme-suc;
+  background-color: $viseme-suc;
 }

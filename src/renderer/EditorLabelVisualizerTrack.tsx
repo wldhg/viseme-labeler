@@ -32,6 +32,8 @@ const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
           state = 'noise';
         } else if (ed.labelData.label[track][i] === visemes.unknownStrID) {
           state = 'unknown';
+        } else if (ed.labelData.label[track][i] === visemes.wrongStrID) {
+          state = 'wrong';
         }
         let dispLabel = '';
         if (

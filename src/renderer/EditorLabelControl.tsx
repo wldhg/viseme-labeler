@@ -40,6 +40,7 @@ const EditorLabelControlVisemeButtonColorMap: {
   typed: 'warning',
   unknown: 'warning',
   empty_str: 'info',
+  wrong: 'error',
 };
 
 const EditorLabelControlVisemeButtonVariantMap: {
@@ -51,6 +52,7 @@ const EditorLabelControlVisemeButtonVariantMap: {
   typed: 'contained',
   unknown: 'outlined',
   empty_str: 'outlined',
+  wrong: 'outlined',
 };
 
 type EditorLabelControlProps = {

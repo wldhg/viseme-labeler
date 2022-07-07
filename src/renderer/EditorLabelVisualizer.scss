@@ -9,6 +9,7 @@ $viseme-c: #67be69;
 $viseme-d: #f9a731;
 $viseme-unk: #f9a731;
 $viseme-no: white;
+$viseme-wrn: #ee3a3d;
 $viseme-others: red;
 $viseme-selected: yellow;
 
@@ -126,6 +127,10 @@ $viseme-selected: yellow;
 
     &[data-state='noise'] {
       background-color: $viseme-no;
+    }
+
+    &[data-state='wrong'] {
+      background-color: $viseme-wrn;
     }
 
     span {

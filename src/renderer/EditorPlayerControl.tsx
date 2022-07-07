@@ -58,6 +58,22 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
     }
   };
 
+  const back1s = () => {
+    if (videoPlayer && audioPlayer) {
+      emptySelection();
+      videoPlayer.currentTime -= 1;
+      audioPlayer.currentTime = videoPlayer.currentTime;
+    }
+  };
+
+  const go1s = () => {
+    if (videoPlayer && audioPlayer) {
+      emptySelection();
+      videoPlayer.currentTime += 1;
+      audioPlayer.currentTime = videoPlayer.currentTime;
+    }
+  };
+
   const back5s = () => {
     if (videoPlayer && audioPlayer) {
       emptySelection();
@@ -105,6 +121,12 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
           +1 frame
         </Button>
       </Tooltip>
+      <Button size="small" variant="outlined" onClick={back1s}>
+        -1 sec
+      </Button>
+      <Button size="small" variant="outlined" onClick={go1s}>
+        +1 sec
+      </Button>
       <Tooltip title="Left Arrow">
         <Button size="small" variant="outlined" onClick={back5s}>
           -5 sec
