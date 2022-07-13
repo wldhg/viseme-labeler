@@ -10,13 +10,15 @@
  */
 
 import path from 'path';
-import { app, BrowserWindow, shell, ipcMain } from 'electron';
+import { app, BrowserWindow, shell, ipcMain, crashReporter } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import registerMainChannels from '../channel/main';
 import { Hermes } from '../channel/shared';
 import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
+
+crashReporter.start({ uploadToServer: false });
 
 export default class AppUpdater {
   constructor() {
