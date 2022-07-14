@@ -15,8 +15,13 @@ jobs:
 
     strategy:
       matrix:
-        os: [macos-latest, windows-latest, ubuntu-latest]
-        bflag: [--mac, --win, --linux]
+        include:
+          - os: macos-latest
+            bflag: --mac
+          - os: windows-latest
+            bflag: --win
+          - os: ubuntu-latest
+            bflag: --linux
 
     steps:
       - name: Check out Git repository
