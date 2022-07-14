@@ -1,14 +1,22 @@
 name: Test and Publish
 
-on: pull_request
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  test:
+  test-n-publish:
+    permissions:
+      contents: write
+      packages: write
+
     runs-on: ${{ matrix.os }}
 
     strategy:
       matrix:
         os: [macos-latest, windows-latest, ubuntu-latest]
+        bflag: [--mac, --win, --linux]
 
     steps:
       - name: Check out Git repository
@@ -23,6 +31,7 @@ jobs:
       - name: npm install
         run: |
           npm install
+
       - name: npm test
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -31,3 +40,11 @@ jobs:
           npm run lint
           npm exec tsc
           npm test
+      - name: npm run build
+        env:
+          # This is used for uploading release assets to github
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          npm run postinstall
+          npm run build
+          npm exec electron-builder -- --publish always ${{ matrix.bflag }}
