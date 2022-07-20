@@ -1,9 +1,4 @@
-import {
-  BrowserWindow,
-  contextBridge,
-  ipcRenderer,
-  IpcRendererEvent,
-} from 'electron';
+import { contextBridge, ipcRenderer, IpcRendererEvent } from 'electron';
 import { R2MChannels } from '../channel/shared';
 
 export type Channels = 'ipc-example' | 'destroy-force' | R2MChannels;
