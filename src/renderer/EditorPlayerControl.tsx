@@ -58,6 +58,31 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
     }
   };
 
+  const back8F = () => {
+    if (videoPlayer && audioPlayer) {
+      emptySelection();
+      const currentTime = (currentFrame - 8) / ed.videoInfo.fps;
+      videoPlayer.currentTime = currentTime;
+      audioPlayer.currentTime = currentTime;
+    }
+  };
+
+  const go8F = () => {
+    if (videoPlayer && audioPlayer) {
+      audioPlayer.currentTime = videoPlayer.currentTime;
+      emptySelection();
+      const seekTime = (currentFrame + 8) / ed.videoInfo.fps;
+      setTimeout(() => {
+        if (audioPlayer) {
+          audioPlayer.pause();
+          audioPlayer.currentTime = seekTime;
+        }
+      }, (8 / ed.videoInfo.fps) * 950);
+      audioPlayer.play();
+      videoPlayer.currentTime = seekTime;
+    }
+  };
+
   const back1s = () => {
     if (videoPlayer && audioPlayer) {
       emptySelection();
@@ -74,25 +99,9 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
     }
   };
 
-  const back5s = () => {
-    if (videoPlayer && audioPlayer) {
-      emptySelection();
-      videoPlayer.currentTime -= 5;
-      audioPlayer.currentTime = videoPlayer.currentTime;
-    }
-  };
-
-  const go5s = () => {
-    if (videoPlayer && audioPlayer) {
-      emptySelection();
-      videoPlayer.currentTime += 5;
-      audioPlayer.currentTime = videoPlayer.currentTime;
-    }
-  };
-
   useHotkeys('ctrl+space', playPause);
-  useHotkeys('left', back5s);
-  useHotkeys('right', go5s);
+  useHotkeys('left', back8F);
+  useHotkeys('right', go8F);
   useHotkeys(',', back1F);
   useHotkeys('.', go1F);
 
@@ -111,14 +120,24 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
           {videoPlayer && videoPlayer.paused ? <PlayArrow /> : <Pause />}
         </Button>
       </Tooltip>
-      <Tooltip title="< key">
+      <Tooltip title="Left Arrow">
         <Button size="small" variant="outlined" onClick={back1F}>
           -1 frame
         </Button>
       </Tooltip>
-      <Tooltip title="> key">
+      <Tooltip title="Right Arrow">
         <Button size="small" variant="outlined" onClick={go1F}>
           +1 frame
+        </Button>
+      </Tooltip>
+      <Tooltip title="Up Arrow">
+        <Button size="small" variant="outlined" onClick={back8F}>
+          -8 frame
+        </Button>
+      </Tooltip>
+      <Tooltip title="Down Arrow">
+        <Button size="small" variant="outlined" onClick={go8F}>
+          +8 frame
         </Button>
       </Tooltip>
       <Button size="small" variant="outlined" onClick={back1s}>
@@ -127,16 +146,6 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
       <Button size="small" variant="outlined" onClick={go1s}>
         +1 sec
       </Button>
-      <Tooltip title="Left Arrow">
-        <Button size="small" variant="outlined" onClick={back5s}>
-          -5 sec
-        </Button>
-      </Tooltip>
-      <Tooltip title="Right Arrow">
-        <Button size="small" variant="outlined" onClick={go5s}>
-          +5 sec
-        </Button>
-      </Tooltip>
       <Button
         size="small"
         variant="text"

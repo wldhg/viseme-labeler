@@ -21,6 +21,8 @@ export type GlobalContextT = {
   readonly baseDirectoryRead: boolean;
   setBaseDirectoryRead: (baseDirectoryRead: boolean) => void;
   setCurrentItemCompleted: () => void;
+  readonly isLightTheme: boolean;
+  toggleTheme: () => void;
   reset: () => void;
 };
 
@@ -38,6 +40,8 @@ const GlobalContextDefault: GlobalContextT = {
   baseDirectoryRead: false,
   setBaseDirectoryRead: (_baseDirectoryRead: boolean) => {},
   setCurrentItemCompleted: () => {},
+  isLightTheme: false,
+  toggleTheme: () => {},
   reset: () => {},
 };
 const GlobalContext = createContext<GlobalContextT>(GlobalContextDefault);
@@ -56,6 +60,7 @@ export const GlobalContextProvider = (props: GlobalContextProps) => {
   const [baseDirectoryPath, setBaseDirectoryPath] = useState<string>('');
   const [baseDirectoryRead, setBaseDirectoryRead] = useState<boolean>(false);
   const [convertTargetPaths, setConvertTargetPaths] = useState<string[]>([]);
+  const [isLightTheme, setIsLightTheme] = useState<boolean>(false);
 
   const reset = () => {
     setItems([]);
@@ -70,6 +75,10 @@ export const GlobalContextProvider = (props: GlobalContextProps) => {
     const xitems = items;
     xitems[currentItemIndex].isCompleted = true;
     setItems(xitems);
+  };
+
+  const toggleTheme = () => {
+    setIsLightTheme(!isLightTheme);
   };
 
   return (
@@ -88,6 +97,8 @@ export const GlobalContextProvider = (props: GlobalContextProps) => {
         convertTargetPaths,
         setConvertTargetPaths,
         setCurrentItemCompleted,
+        isLightTheme,
+        toggleTheme,
         reset,
       }}
     >

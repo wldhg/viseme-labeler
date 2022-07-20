@@ -15,7 +15,6 @@ import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import registerMainChannels from '../channel/main';
 import { Hermes } from '../channel/shared';
-import MenuBuilder from './menu';
 import { resolveHtmlPath } from './util';
 
 crashReporter.start({ uploadToServer: false });
@@ -102,7 +101,10 @@ const createWindow = async () => {
         : path.join(__dirname, '../../.erb/dll/preload.js'),
       webSecurity: false,
     },
+    titleBarStyle: 'hidden',
   });
+
+  mainWindow.setMenu(null);
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
@@ -128,9 +130,6 @@ const createWindow = async () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  const menuBuilder = new MenuBuilder(mainWindow);
-  menuBuilder.buildMenu();
 
   // Open urls in the user's browser
   mainWindow.webContents.setWindowOpenHandler((edata) => {

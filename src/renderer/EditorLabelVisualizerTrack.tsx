@@ -10,54 +10,67 @@ type EditorLabelVisualizerTrackProps = {
   track: EditorLabelTrack;
 };
 
+const visibleFrameCountPrev = 60;
+const visibleFrameCountPost = 90;
+
 const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
   const { currentFrame, track } = props;
   const ed = useContext(EditorContext);
+
+  const sliceMin = Math.max(0, currentFrame - visibleFrameCountPrev);
+  const sliceMax = Math.min(
+    ed.labelData.timing.length,
+    currentFrame + visibleFrameCountPost
+  );
+
+  const currentCursor = Math.min(currentFrame, visibleFrameCountPrev);
 
   return (
     <div
       className="visemecont"
       style={
         {
-          '--current-frame': currentFrame,
+          '--current-frame': currentCursor,
           '--track-no': track,
         } as React.CSSProperties
       }
     >
-      {ed.labelData.timing.map((t, i) => {
+      {ed.labelData.timing.slice(sliceMin, sliceMax).map((t, i) => {
+        const ri = i + sliceMin;
+
         let state = 'labelled';
-        if (ed.labelData.label[track][i] === EditorLabelNotLabelled) {
+        if (ed.labelData.label[track][ri] === EditorLabelNotLabelled) {
           state = 'unlabelled';
-        } else if (ed.labelData.label[track][i] === visemes.emptyStrID) {
+        } else if (ed.labelData.label[track][ri] === visemes.emptyStrID) {
           state = 'noise';
-        } else if (ed.labelData.label[track][i] === visemes.unknownStrID) {
+        } else if (ed.labelData.label[track][ri] === visemes.unknownStrID) {
           state = 'unknown';
-        } else if (ed.labelData.label[track][i] === visemes.wrongStrID) {
+        } else if (ed.labelData.label[track][ri] === visemes.wrongStrID) {
           state = 'wrong';
         }
         let dispLabel = '';
         if (
-          ed.labelData.label[track][i] !== EditorLabelNotLabelled &&
-          ed.labelData.label[track][i] !== visemes.emptyStrID
+          ed.labelData.label[track][ri] !== EditorLabelNotLabelled &&
+          ed.labelData.label[track][ri] !== visemes.emptyStrID
         ) {
-          if (ed.labelData.timing.length - 1 === i) {
+          if (ed.labelData.timing.length - 1 === ri) {
             // Last tick
-            dispLabel = visemes.def[ed.labelData.label[track][i]]?.disp;
+            dispLabel = visemes.def[ed.labelData.label[track][ri]]?.disp;
           } else if (
-            ed.labelData.label[track][i + 1] !== ed.labelData.label[track][i]
+            ed.labelData.label[track][ri + 1] !== ed.labelData.label[track][ri]
           ) {
             // Different label
-            dispLabel = visemes.def[ed.labelData.label[track][i]]?.disp;
+            dispLabel = visemes.def[ed.labelData.label[track][ri]]?.disp;
           }
         }
 
         return (
           <div
-            data-labelidx={i}
+            data-labelidx={ri}
             data-track={track}
-            data-selected={ed.selection[track].includes(i) ? 'true' : 'false'}
+            data-selected={ed.selection[track].includes(ri) ? 'true' : 'false'}
             data-timeline={
-              i % Math.round(ed.videoInfo.fps) === 0
+              ri % Math.round(ed.videoInfo.fps) === 0
                 ? `${Math.floor(t / 60)}:${String(Math.round(t % 60)).padStart(
                     2,
                     '0'
@@ -66,7 +79,7 @@ const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
             }
             data-state={state}
             data-type={
-              visemes.def[ed.labelData.label[track][i]]?.type || 'notype'
+              visemes.def[ed.labelData.label[track][ri]]?.type || 'notype'
             }
             data-strongtick={dispLabel !== ''}
             key={`visemelabeller-${track}-${ed.videoInfo.duration}-${t}`}
@@ -76,7 +89,7 @@ const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
               style={
                 {
                   '--label-margin':
-                    visemes.allIDs.indexOf(ed.labelData.label[track][i]) * 2,
+                    visemes.allIDs.indexOf(ed.labelData.label[track][ri]) * 2,
                   '--label-content': `"${dispLabel}"`,
                 } as React.CSSProperties
               }

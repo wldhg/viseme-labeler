@@ -2,17 +2,33 @@
  * @NOTE: Prepend a `~` to css file paths that are in your node_modules
  *        See https://github.com/webpack-contrib/sass-loader#imports
  */
-body {
+.dark-container {
   background-color: #191a1d;
   color: white;
 }
 
+.light-container {
+  background-color: #fafafa;
+  color: #333;
+}
+
 kbd {
-  border: 1px solid white;
+  border: 1px solid #ccc;
   padding: 2px 3px;
   font-family: 'Inconsolata', monospace;
   margin: 2px 3px;
   box-sizing: border-box;
   line-height: 1.2em;
   display: inline-block;
+}
+
+.app-bar {
+  -webkit-app-region: drag;
+  &-exclusive > * {
+    -webkit-app-region: no-drag;
+  }
+}
+
+.no-appbar-drag {
+  -webkit-app-region: no-drag;
 }

@@ -11,7 +11,8 @@ $viseme-unk: #f9a731;
 $viseme-no: white;
 $viseme-wrn: #ee3a3d;
 $viseme-others: red;
-$viseme-selected: yellow;
+$viseme-selected-dark: yellow;
+$viseme-selected-light: red;
 
 #visemewrap {
   background-color: rgba(128, 128, 128, 0.1);
@@ -63,21 +64,36 @@ $viseme-selected: yellow;
     left: 331px;
   }
 
+  .light-container & .visemeblock {
+    background-color: rgba(128, 128, 128, 0.1);
+  }
+
+  .dark-container & .visemeblock {
+    background-color: rgba(128, 128, 128, 0.5);
+  }
+
   .visemeblock {
     width: $viseme-block-width;
     min-width: $viseme-block-width;
     max-width: $viseme-block-width;
     height: $viseme-block-height;
-    background-color: rgba(128, 128, 128, 0.5);
     margin-right: $viseme-block-pad;
     margin-top: 28px;
     border-radius: 3px;
 
-    &[data-selected='true'] {
-      outline: 1px solid $viseme-selected;
+    .light-container &[data-selected='true'] {
+      outline: 1px solid $viseme-selected-light;
     }
 
-    &[data-strongtick='true'] {
+    .dark-container &[data-selected='true'] {
+      outline: 1px solid $viseme-selected-dark;
+    }
+
+    .light-container &:not([data-strongtick='true']) {
+      filter: brightness(1.5);
+    }
+
+    .dark-container &[data-strongtick='true'] {
       filter: brightness(2);
     }
 
@@ -95,11 +111,18 @@ $viseme-selected: yellow;
     }
 
     &[data-timeline]:not([data-timeline='']) {
+      .light-container &::after {
+        top: -8px;
+      }
+
+      .dark-container &::after {
+        top: 21px;
+      }
+
       &::after {
         position: absolute;
-        top: 21px;
         width: $viseme-block-width;
-        height: 5px;
+        height: 4px;
         background-color: $viseme-others;
         content: '';
       }
@@ -147,6 +170,7 @@ $viseme-selected: yellow;
         right: 1px;
         text-shadow: black 0 0 8px, black 0 0 8px, black 0 0 8px;
         width: 7em;
+        color: white;
         text-align: right;
         content: var(--label-content);
         top: calc(2px + var(--label-margin) * 1px);

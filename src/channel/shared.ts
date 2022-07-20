@@ -6,7 +6,10 @@ export type R2MChannels =
   | 'dir-select'
   | 'open-url'
   | 'viseme-save'
-  | 'viseme-load';
+  | 'viseme-load'
+  | 'app-close'
+  | 'app-unmaximize'
+  | 'app-maximize';
 
 export type M2RChannels =
   | 'ffmpeg-probed'

@@ -1,18 +1,29 @@
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { IconButton, Tooltip, Toolbar } from '@mui/material';
 import {
   RotateLeft,
   FolderOpen,
-  SentimentVeryDissatisfied,
+  SentimentVerySatisfied,
   ChangeCircleOutlined,
   Help,
+  Clear,
+  Fullscreen,
+  FullscreenExit,
+  DarkMode,
+  LightMode,
 } from '@mui/icons-material';
 import GlobalContext, { GlobalContextItem } from '../context/global';
 import DialogContext from '../context/dialog';
 
-const AppToolbar = () => {
+type AppToolbarProps = {
+  children: React.ReactNode;
+};
+
+const AppToolbar = (props: AppToolbarProps) => {
+  const { children } = props;
   const ctx = useContext(GlobalContext);
   const dialog = useContext(DialogContext);
+  const [isMaximized, setIsMaximized] = useState(false);
 
   const resetContextWithConfirm = () => {
     return new Promise<void>((resolve, reject) => {
@@ -209,8 +220,8 @@ const AppToolbar = () => {
       handler: loadFolderUsingDialog,
     },
     {
-      text: 'You Sad?',
-      icon: <SentimentVeryDissatisfied />,
+      text: 'Get Your Energy Here',
+      icon: <SentimentVerySatisfied />,
       handler: openComfort,
     },
     {
@@ -220,14 +231,14 @@ const AppToolbar = () => {
       disabled: ctx.convertTargetPaths.length === 0,
     },
     {
-      text: 'Viseme Help Table',
+      text: 'Labeling Help Document',
       icon: <Help />,
       handler: openHelp,
     },
   ];
 
   return (
-    <Toolbar>
+    <Toolbar className="app-bar-exclusive">
       {mainMenuItem.map((m) =>
         m.disabled ? (
           <IconButton disabled onClick={m.handler} key={m.text}>
@@ -239,6 +250,34 @@ const AppToolbar = () => {
           </Tooltip>
         )
       )}
+      <IconButton
+        onClick={() => {
+          ctx.toggleTheme();
+        }}
+      >
+        {ctx.isLightTheme ? <DarkMode /> : <LightMode />}
+      </IconButton>
+      <IconButton
+        onClick={() => {
+          if (isMaximized) {
+            window.electron.ipcRenderer.sendMessage('app-unmaximize', []);
+            setIsMaximized(false);
+          } else {
+            window.electron.ipcRenderer.sendMessage('app-maximize', []);
+            setIsMaximized(true);
+          }
+        }}
+      >
+        {isMaximized ? <FullscreenExit /> : <Fullscreen />}
+      </IconButton>
+      <IconButton
+        onClick={() => {
+          window.electron.ipcRenderer.sendMessage('app-close', []);
+        }}
+      >
+        <Clear />
+      </IconButton>
+      {children}
     </Toolbar>
   );
 };

@@ -39,6 +39,7 @@ const Editor = () => {
           setProgress={setProgress}
           style={{
             width: 'auto',
+            maxWidth: 'calc(100% - 900px)',
             marginBottom: '10px',
             height: 'calc(100vh - 140px)',
           }}

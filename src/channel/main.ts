@@ -133,4 +133,31 @@ export default (
       })
       .catch(console.error);
   });
+
+  ipcMain.on('app-close', () => {
+    getHermes()
+      .then(({ mainWindow }) => {
+        mainWindow.close();
+        return null;
+      })
+      .catch(console.error);
+  });
+
+  ipcMain.on('app-unmaximize', () => {
+    getHermes()
+      .then(({ mainWindow }) => {
+        mainWindow.unmaximize();
+        return null;
+      })
+      .catch(console.error);
+  });
+
+  ipcMain.on('app-maximize', () => {
+    getHermes()
+      .then(({ mainWindow }) => {
+        mainWindow.maximize();
+        return null;
+      })
+      .catch(console.error);
+  });
 };
