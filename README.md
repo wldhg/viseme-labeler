@@ -8,6 +8,7 @@ _VisLab, a electron-based viseme labeler_
 - In-editor notice support (look `src/renderer/EditorNotice.tsx`)
 - Electron-based multi-OS support
 - Light/dark mode support
+- Frame-by-frame labeling support
 
 ---
 
