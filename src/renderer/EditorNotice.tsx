@@ -9,6 +9,7 @@ const EditorNotice = () => {
       style={{
         fontFamily: '"Nanum Gothic Coding", monospace',
         fontSmooth: 'always',
+        fontSize: '14px',
       }}
     >
       <h3 className="exception-title">주의/예외 사항</h3>
@@ -28,25 +29,40 @@ const EditorNotice = () => {
       <ul className="exception-list">
         <li>
           <span>
-            [초성] A타입 자음&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ [중성] B타입 단모음
+            말할 때{' '}
+            <b>
+              [초성] A타입 자음&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+ [중성] B타입
+              단모음
+            </b>{' '}
+            이 나오면
           </span>
           &nbsp;&mdash;&nbsp;
           <span className="exception-strong">
-            모음 앞에 <i className="unk-btn-mock btn-mock">XX</i> 추가
+            모음 <big>앞</big>에 <i className="unk-btn-mock btn-mock">XX</i>{' '}
+            추가
           </span>
         </li>
         <li>
-          <span>[중성] B타입 단모음&nbsp;&nbsp;&nbsp;+ [종성] A타입 자음</span>
-          &nbsp;&nbsp;&nbsp;&mdash;&nbsp;
+          <span>
+            말할 때{' '}
+            <b>[중성] B타입 단모음&nbsp;&nbsp;&nbsp;+ [종성] A타입 자음</b>
+            &nbsp;&nbsp;&nbsp;이 나오면
+          </span>
+          &nbsp;&mdash;&nbsp;
           <span className="exception-strong">
-            모음 뒤에 <i className="unk-btn-mock btn-mock">XX</i> 추가
+            모음 <big>뒤</big>에 <i className="unk-btn-mock btn-mock">XX</i>{' '}
+            추가
           </span>
         </li>
         <li>
-          <span>[중성] C타입 이중모음 + [종성] A타입 자음</span>
-          &nbsp;&nbsp;&nbsp;&mdash;&nbsp;
+          <span>
+            말할 때 <b>[중성] C타입 이중모음 + [종성] A타입 자음</b>
+            &nbsp;&nbsp;&nbsp;이 나오면
+          </span>
+          &nbsp;&mdash;&nbsp;
           <span className="exception-strong">
-            모음 뒤에 <i className="unk-btn-mock btn-mock">XX</i> 추가
+            모음 <big>뒤</big>에 <i className="unk-btn-mock btn-mock">XX</i>{' '}
+            추가
           </span>
         </li>
       </ul>

@@ -146,7 +146,7 @@ export default (
   ipcMain.on('app-unmaximize', () => {
     getHermes()
       .then(({ mainWindow }) => {
-        mainWindow.unmaximize();
+        mainWindow.setFullScreen(false);
         return null;
       })
       .catch(console.error);
@@ -155,7 +155,7 @@ export default (
   ipcMain.on('app-maximize', () => {
     getHermes()
       .then(({ mainWindow }) => {
-        mainWindow.maximize();
+        mainWindow.setFullScreen(true);
         return null;
       })
       .catch(console.error);

@@ -15,6 +15,8 @@ export type VisemeDefMap = {
     disp: string;
     desc?: string;
     keybind?: string;
+    keybind_disp?: string;
+    track_disp?: string;
   };
 };
 

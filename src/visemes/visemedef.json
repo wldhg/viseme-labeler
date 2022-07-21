@@ -3,95 +3,135 @@
     "em": {
       "type": "empty_str",
       "disp": "-",
-      "desc": "공백/노이즈"
+      "desc": "공백/노이즈",
+      "keybind": "-"
     },
     "xx": {
       "type": "unknown",
       "disp": "XX",
-      "desc": "복합 (명시된 예외에만 사용)"
+      "desc": "복합 (명시된 예외에만 사용)",
+      "keybind": "x"
     },
     "ww": {
       "type": "wrong",
       "disp": "오류",
-      "desc": "말을 하지 않는데 입이 움직이는 것"
+      "desc": "말을 하지 않는데 입이 움직이는 것",
+      "keybind": "e"
     },
     "pm": {
       "type": "typea",
-      "disp": "ㅁ,ㅂ,ㅃ,ㅍ"
+      "disp": "ㅁ,ㅂ,ㅃ,ㅍ",
+      "track_disp": "ㅂ",
+      "keybind": "q",
+      "keybind_disp": "ㅂ"
     },
     "aa": {
       "type": "typeb",
-      "disp": "ㅏ"
+      "disp": "ㅏ",
+      "keybind": "k",
+      "keybind_disp": "ㅏ"
     },
     "jy+aa": {
       "type": "typeb",
-      "disp": "ㅑ"
+      "disp": "ㅑ",
+      "keybind": "i",
+      "keybind_disp": "ㅑ"
     },
     "eo": {
       "type": "typeb",
-      "disp": "ㅓ"
+      "disp": "ㅓ",
+      "keybind": "j",
+      "keybind_disp": "ㅓ"
     },
     "jy+eo": {
       "type": "typeb",
-      "disp": "ㅕ"
+      "disp": "ㅕ",
+      "keybind": "u",
+      "keybind_disp": "ㅕ"
     },
     "oo": {
       "type": "typeb",
-      "disp": "ㅗ"
+      "disp": "ㅗ",
+      "keybind": "h",
+      "keybind_disp": "ㅗ"
     },
     "jy+oo": {
       "type": "typeb",
-      "disp": "ㅛ"
+      "disp": "ㅛ",
+      "keybind": "y",
+      "keybind_disp": "ㅛ"
     },
     "uu": {
       "type": "typeb",
-      "disp": "ㅜ"
+      "disp": "ㅜ",
+      "keybind": "n",
+      "keybind_disp": "ㅜ"
     },
     "jy+uu": {
       "type": "typeb",
-      "disp": "ㅠ"
+      "disp": "ㅠ",
+      "keybind": "b",
+      "keybind_disp": "ㅠ"
     },
     "eu": {
       "type": "typeb",
-      "disp": "ㅡ"
+      "disp": "ㅡ",
+      "keybind": "m",
+      "keybind_disp": "ㅡ"
     },
     "ii": {
       "type": "typeb",
-      "disp": "ㅣ"
+      "disp": "ㅣ",
+      "keybind": "l",
+      "keybind_disp": "ㅣ"
     },
     "ee": {
       "type": "typec",
-      "disp": "ㅐ,ㅔ"
+      "disp": "ㅐ,ㅔ",
+      "track_disp": "ㅐ",
+      "keybind": "o",
+      "keybind_disp": "o"
     },
     "jy+ee": {
       "type": "typec",
-      "disp": "ㅒ,ㅖ"
+      "disp": "ㅒ,ㅖ",
+      "track_disp": "ㅒ",
+      "keybind": "shift+o"
     },
     "ww+aa": {
       "type": "typec",
-      "disp": "ㅘ"
+      "disp": "ㅘ",
+      "keybind": "a"
     },
     "ww+ee": {
       "type": "typec",
-      "disp": "ㅙ,ㅚ,ㅞ"
+      "disp": "ㅙ,ㅚ,ㅞ",
+      "track_disp": "ㅚ",
+      "keybind": "s"
     },
     "ww+eo": {
       "type": "typec",
-      "disp": "ㅝ"
+      "disp": "ㅝ",
+      "keybind": "d"
     },
     "ww+ii": {
       "type": "typec",
-      "disp": "ㅟ"
+      "disp": "ㅟ",
+      "keybind": "f"
     },
     "eu+jy": {
       "type": "typec",
       "disp": "ㅢ",
-      "desc": "첫 음소가 A타입이 아닌 음절의 'ㅢ'"
+      "desc": "첫 음소가 A타입이 아닌 음절의 'ㅢ'",
+      "track_disp": "ㅢB",
+      "keybind": "g"
     },
     "eu+ii": {
       "type": "typec",
       "disp": "ㅢ[A]",
-      "desc": "첫 음소가 A타입인 음절의 'ㅢ'"
+      "desc": "첫 음소가 A타입인 음절의 'ㅢ'",
+      "track_disp": "ㅢA",
+      "keybind": "shift+g"
     }
   },
   "types": {

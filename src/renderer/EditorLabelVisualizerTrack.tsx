@@ -53,14 +53,15 @@ const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
           ed.labelData.label[track][ri] !== EditorLabelNotLabelled &&
           ed.labelData.label[track][ri] !== visemes.emptyStrID
         ) {
+          const tracklabData = visemes.def[ed.labelData.label[track][ri]];
           if (ed.labelData.timing.length - 1 === ri) {
             // Last tick
-            dispLabel = visemes.def[ed.labelData.label[track][ri]]?.disp;
+            dispLabel = tracklabData?.track_disp || tracklabData?.disp;
           } else if (
             ed.labelData.label[track][ri + 1] !== ed.labelData.label[track][ri]
           ) {
             // Different label
-            dispLabel = visemes.def[ed.labelData.label[track][ri]]?.disp;
+            dispLabel = tracklabData?.track_disp || tracklabData?.disp;
           }
         }
 

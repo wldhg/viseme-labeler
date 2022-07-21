@@ -250,33 +250,39 @@ const AppToolbar = (props: AppToolbarProps) => {
           </Tooltip>
         )
       )}
-      <IconButton
-        onClick={() => {
-          ctx.toggleTheme();
-        }}
-      >
-        {ctx.isLightTheme ? <DarkMode /> : <LightMode />}
-      </IconButton>
-      <IconButton
-        onClick={() => {
-          if (isMaximized) {
-            window.electron.ipcRenderer.sendMessage('app-unmaximize', []);
-            setIsMaximized(false);
-          } else {
-            window.electron.ipcRenderer.sendMessage('app-maximize', []);
-            setIsMaximized(true);
-          }
-        }}
-      >
-        {isMaximized ? <FullscreenExit /> : <Fullscreen />}
-      </IconButton>
-      <IconButton
-        onClick={() => {
-          window.electron.ipcRenderer.sendMessage('app-close', []);
-        }}
-      >
-        <Clear />
-      </IconButton>
+      <Tooltip title={ctx.isLightTheme ? 'Dark Mode' : 'Light Mode'}>
+        <IconButton
+          onClick={() => {
+            ctx.toggleTheme();
+          }}
+        >
+          {ctx.isLightTheme ? <DarkMode /> : <LightMode />}
+        </IconButton>
+      </Tooltip>
+      <Tooltip title={isMaximized ? 'Window Mode' : 'Full Screen'}>
+        <IconButton
+          onClick={() => {
+            if (isMaximized) {
+              window.electron.ipcRenderer.sendMessage('app-unmaximize', []);
+              setIsMaximized(false);
+            } else {
+              window.electron.ipcRenderer.sendMessage('app-maximize', []);
+              setIsMaximized(true);
+            }
+          }}
+        >
+          {isMaximized ? <FullscreenExit /> : <Fullscreen />}
+        </IconButton>
+      </Tooltip>
+      <Tooltip title="Exit VisLab">
+        <IconButton
+          onClick={() => {
+            window.electron.ipcRenderer.sendMessage('app-close', []);
+          }}
+        >
+          <Clear />
+        </IconButton>
+      </Tooltip>
       {children}
     </Toolbar>
   );
