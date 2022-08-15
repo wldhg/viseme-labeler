@@ -1,7 +1,6 @@
 import { useContext } from 'react';
 import { Stack, Button, Tooltip } from '@mui/material';
 import { Save, FormatPaint } from '@mui/icons-material';
-import { useHotkeys } from 'react-hotkeys-hook';
 import Selecto from 'react-selecto';
 import GlobalContext from '../context/global';
 import EditorContext, {
@@ -13,6 +12,8 @@ import EditorContext, {
   EditorLabelNotLabelled,
 } from '../context/editor';
 import visemes, { VisemeType } from '../visemes/visemes';
+
+import './EditorLabelControl.scss';
 
 type EditorLabelControlVisemeButtonColor =
   | 'primary'
@@ -107,6 +108,24 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
     };
   };
 
+  const getClickFunction = (elementID: string) => () => {
+    const el = document.getElementById(elementID);
+    if (el) {
+      el.dispatchEvent(
+        new MouseEvent('click', {
+          view: window,
+          bubbles: true,
+          cancelable: true,
+          buttons: 1,
+        })
+      );
+      el.classList.add('visemelabelbutton-clicked');
+      setTimeout(() => {
+        el.classList.remove('visemelabelbutton-clicked');
+      }, 500);
+    }
+  };
+
   const getVisemeButton = (
     visemeID: EditorLabelIDExp,
     color: EditorLabelControlVisemeButtonColor,
@@ -115,6 +134,7 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
     const vbutton = (
       <Button
         key={`visemelabelbutton-${visemeID}`}
+        id={`visemelabelbutton-${visemeID}`}
         color={color}
         variant={variant}
         style={EditorLabelControlVisemeButtonStyle}
@@ -124,12 +144,27 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
         {visemes.def[visemeID].disp}
       </Button>
     );
-    if (visemes.def[visemeID].desc) {
+    if (visemes.def[visemeID].keybind) {
+      ctx.setShortcutFunction(
+        visemes.def[visemeID].keybind || '!ERROR!',
+        getClickFunction(`visemelabelbutton-${visemeID}`)
+      );
+    }
+    if (visemes.def[visemeID].desc || visemes.def[visemeID].keybind) {
+      let tooltip = '';
+      if (visemes.def[visemeID].desc) {
+        tooltip += visemes.def[visemeID].desc;
+      }
+      if (visemes.def[visemeID].keybind) {
+        if (visemes.def[visemeID].keybind_disp) {
+          tooltip += ` ("${visemes.def[visemeID].keybind_disp}" key)`;
+        } else {
+          tooltip += ` ("${visemes.def[visemeID].keybind}" key)`;
+        }
+      }
+      tooltip = tooltip.trim();
       return (
-        <Tooltip
-          title={visemes.def[visemeID].desc || '!ERROR!'}
-          key={`visemelabelbutton-tt-${visemeID}`}
-        >
+        <Tooltip title={tooltip} key={`visemelabelbutton-tt-${visemeID}`}>
           {vbutton}
         </Tooltip>
       );
@@ -137,15 +172,28 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
     return vbutton;
   };
 
-  for (let i = 0; i < visemes.allIDs.length; i += 1) {
-    if (visemes.def[visemes.allIDs[i]]?.keybind) {
-      // eslint-disable-next-line react-hooks/rules-of-hooks
-      useHotkeys(
-        visemes.def[visemes.allIDs[i]].keybind as string,
-        getVisemeButtonClickFn(visemes.allIDs[i])
-      );
+  ctx.setShortcutFunction('ctrl+f', getClickFunction('visemelabel-fill-empty'));
+  ctx.setShortcutFunction('ctrl+s', getClickFunction('visemelabel-save'));
+  ctx.setShortcutFunction('delete', () => {
+    ctx.setDoesCurrentItemHasChange(true);
+    ed.label(EditorLabelNotLabelled);
+  });
+  ctx.setShortcutFunction('ctrl+z', () => {
+    if (ed.undoLabelData()) {
+      ctx.setDoesCurrentItemHasChange(true);
+      ed.setBanner('8-do', 'Undo successful', 1000);
+    } else {
+      ed.setBanner('8-do', 'You can not undo anymore', 2000);
     }
-  }
+  });
+  ctx.setShortcutFunction('ctrl+y', () => {
+    if (ed.redoLabelData()) {
+      ctx.setDoesCurrentItemHasChange(true);
+      ed.setBanner('8-do', 'Redo successful', 1000);
+    } else {
+      ed.setBanner('8-do', 'You can not redo anymore', 2000);
+    }
+  });
 
   return (
     <Stack spacing={1} direction="row" style={style}>
@@ -204,12 +252,13 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
           })}
         </Stack>
       </Stack>
-      <Tooltip title="Fill Empty">
+      <Tooltip title="Fill Empty (ctrl+f key)">
         <Button
           style={{
             ...EditorLabelControlVisemeButtonStyle,
             marginLeft: '24px',
           }}
+          id="visemelabel-fill-empty"
           size="small"
           variant="outlined"
           color="info"
@@ -243,10 +292,11 @@ const EditorLabelControl = (props: EditorLabelControlProps) => {
           <FormatPaint />
         </Button>
       </Tooltip>
-      <Tooltip title="Save">
+      <Tooltip title="Save (ctrl+s key)">
         <Button
           style={EditorLabelControlVisemeButtonStyle}
           size="small"
+          id="visemelabel-save"
           variant="outlined"
           color="error"
           onClick={() => {

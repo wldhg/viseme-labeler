@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useRef } from 'react';
 import events from 'events';
 
 export type DialogContextT = {
@@ -67,12 +67,12 @@ export const DialogContextProvider = (props: DialogContextProps) => {
   const [showProgress, setShowProgress] = useState<boolean>(false);
   const [showButtons, setShowButtons] = useState<boolean>(false);
   const [buttonLabel, setButtonLabel] = useState<string>('');
-  const [buttonHandler, setButtonHandler] = useState<() => void>(() => {});
   const [content, setContent] = useState<React.ReactNode | React.ReactNode[]>(
     ''
   );
   const [title, setTitle] = useState<string>('');
   const [show, setShow] = useState<boolean>(false);
+  const buttonHandlerRef = useRef<() => void>(() => {});
 
   const dialogEventEmitter = new events.EventEmitter();
 
@@ -81,6 +81,10 @@ export const DialogContextProvider = (props: DialogContextProps) => {
     if (s === false) {
       dialogEventEmitter.emit('close');
     }
+  };
+
+  const setButtonHandler = (handler: () => void) => {
+    buttonHandlerRef.current = handler;
   };
 
   const reset = () => {
@@ -103,7 +107,7 @@ export const DialogContextProvider = (props: DialogContextProps) => {
         setShowButtons,
         buttonLabel,
         setButtonLabel,
-        buttonHandler,
+        buttonHandler: buttonHandlerRef.current,
         setButtonHandler,
         content,
         setContent,

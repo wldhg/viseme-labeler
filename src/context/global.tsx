@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, useRef } from 'react';
 
 export type GlobalContextItem = {
   srcFilePath: string;
@@ -23,6 +23,10 @@ export type GlobalContextT = {
   setCurrentItemCompleted: () => void;
   readonly isLightTheme: boolean;
   toggleTheme: () => void;
+  readonly shortcutFunctions: { [key: string]: () => void };
+  setShortcutFunction: (key: string, func?: () => void) => void;
+  readonly playerSpeed: number;
+  setPlayerSpeed: (playerSpeed: number) => void;
   reset: () => void;
 };
 
@@ -42,6 +46,10 @@ const GlobalContextDefault: GlobalContextT = {
   setCurrentItemCompleted: () => {},
   isLightTheme: false,
   toggleTheme: () => {},
+  shortcutFunctions: {},
+  setShortcutFunction: (_key: string, _func?: () => void) => {},
+  playerSpeed: 1,
+  setPlayerSpeed: (_playerSpeed: number) => {},
   reset: () => {},
 };
 const GlobalContext = createContext<GlobalContextT>(GlobalContextDefault);
@@ -61,6 +69,8 @@ export const GlobalContextProvider = (props: GlobalContextProps) => {
   const [baseDirectoryRead, setBaseDirectoryRead] = useState<boolean>(false);
   const [convertTargetPaths, setConvertTargetPaths] = useState<string[]>([]);
   const [isLightTheme, setIsLightTheme] = useState<boolean>(false);
+  const [playerSpeed, setPlayerSpeed] = useState<number>(1);
+  const shortcutFunctions = useRef<{ [key: string]: () => void }>({});
 
   const reset = () => {
     setItems([]);
@@ -81,6 +91,14 @@ export const GlobalContextProvider = (props: GlobalContextProps) => {
     setIsLightTheme(!isLightTheme);
   };
 
+  const setShortcutFunction = (key: string, func?: () => void) => {
+    if (func) {
+      shortcutFunctions.current[key] = func;
+    } else {
+      delete shortcutFunctions.current[key];
+    }
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -99,6 +117,10 @@ export const GlobalContextProvider = (props: GlobalContextProps) => {
         setCurrentItemCompleted,
         isLightTheme,
         toggleTheme,
+        shortcutFunctions: shortcutFunctions.current,
+        setShortcutFunction,
+        playerSpeed,
+        setPlayerSpeed,
         reset,
       }}
     >

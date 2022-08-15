@@ -41,6 +41,7 @@ const AppToolbar = (props: AppToolbarProps) => {
         dialog.on('close', () => {
           reject();
         });
+        dialog.setShowButtons(true);
         dialog.setShow(true);
       } else {
         ctx.reset();
@@ -204,7 +205,7 @@ const AppToolbar = (props: AppToolbarProps) => {
 
   const openHelp = () => {
     window.electron.ipcRenderer.sendMessage('open-url', [
-      'https://wldh.notion.site/Viseme-ed252c234e204ffbb2179c0262fcd5f4',
+      'https://wldh.notion.site/Viseme-0d82b4468a03420caa03282ef4042989', // 이거 쓰지 말고 EnvVar로 둬라
     ]);
   };
 

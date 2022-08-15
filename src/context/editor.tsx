@@ -65,6 +65,8 @@ export type EditorContextT = {
     selection: EditorSelection,
     visemeID: EditorLabelIDExp
   ) => void;
+  undoLabelData: () => boolean;
+  redoLabelData: () => boolean;
   forceSetLabelData: (timings: number[], labels: EditorLabelContent) => void;
   reset: () => void;
 };
@@ -98,6 +100,8 @@ export const EditorContextDefault: EditorContextT = {
     _selection: EditorSelection,
     _visemeID: EditorLabelIDExp
   ) => {},
+  undoLabelData: () => false,
+  redoLabelData: () => false,
   forceSetLabelData: (_timings: number[], _labels: EditorLabelContent) => {},
   reset: () => {},
 };
@@ -120,6 +124,16 @@ export const EditorContextProvider = (props: EditorContextProps) => {
   const [labelData, setLabelData] = useState<EditorLabelData>(
     EditorContextDefault.labelData
   );
+  const [labelDataHistory, setLabelDataHistory] = useState<EditorLabelData[]>(
+    []
+  );
+  const [lastLabeledHistory, setLastLabeledHistory] = useState<
+    EditorLabelLastIndex[]
+  >([]);
+  const [labelDataFuture, setLabelDataFuture] = useState<EditorLabelData[]>([]);
+  const [lastLabeledFuture, setLastLabeledFuture] = useState<
+    EditorLabelLastIndex[]
+  >([]);
   const [selection, setSelection] = useState<EditorSelection>(
     EditorContextDefault.selection
   );
@@ -135,6 +149,21 @@ export const EditorContextProvider = (props: EditorContextProps) => {
     selec: EditorSelection,
     visemeID: EditorLabelIDExp
   ) => {
+    const newLabelDataHistory = labelDataHistory.concat([
+      JSON.parse(JSON.stringify(labelData)),
+    ]);
+    if (newLabelDataHistory.length > 50) {
+      newLabelDataHistory.shift();
+    }
+    setLabelDataHistory(newLabelDataHistory);
+    const newLastLabeledHistory = lastLabeledHistory.concat([
+      JSON.parse(JSON.stringify(lastLabeled)),
+    ]);
+    if (newLastLabeledHistory.length > 50) {
+      newLastLabeledHistory.shift();
+    }
+    setLastLabeledHistory(newLastLabeledHistory);
+
     setSelection(selec);
 
     const ll: MutableEditorLabelLastIndex = lastLabeled;
@@ -150,11 +179,16 @@ export const EditorContextProvider = (props: EditorContextProps) => {
       }
     });
 
-    setLabelData({
+    const nl = {
       timing: labelData.timing,
       label: cl,
-    });
+    };
+
+    setLabelData(nl);
     setLastLabeled(ll);
+
+    setLabelDataFuture([]);
+    setLastLabeledFuture([]);
   };
 
   const label = (visemeID: EditorLabelIDExp) => {
@@ -195,6 +229,10 @@ export const EditorContextProvider = (props: EditorContextProps) => {
         0: Array<EditorLabelIDExp>(vi.frames).fill(EditorLabelNotLabelled),
       },
     });
+    setLastLabeledHistory([]);
+    setLabelDataHistory([]);
+    setLastLabeledFuture([]);
+    setLabelDataFuture([]);
   };
 
   const reset = () => {
@@ -202,6 +240,10 @@ export const EditorContextProvider = (props: EditorContextProps) => {
     setLabelData(EditorContextDefault.labelData);
     setSelection(EditorContextDefault.selection);
     setLastLabeled(EditorContextDefault.lastLabeled);
+    setLastLabeledHistory([]);
+    setLabelDataHistory([]);
+    setLastLabeledFuture([]);
+    setLabelDataFuture([]);
     setIsAnalyzed(false);
     setBannerInternal('');
     banners.current = defaultBanners;
@@ -214,6 +256,52 @@ export const EditorContextProvider = (props: EditorContextProps) => {
       timing: timings,
       label: xlabel,
     });
+  };
+
+  const undoLabelData = () => {
+    if (labelDataHistory.length > 0) {
+      const last = labelDataHistory.pop();
+      if (last) {
+        const newLabelDataFuture = labelDataFuture.concat([
+          JSON.parse(JSON.stringify(labelData)),
+        ]);
+        setLabelDataFuture(newLabelDataFuture);
+        setLabelData(last);
+      }
+      const lastL = lastLabeledHistory.pop();
+      if (lastL) {
+        const newLastLabeledFuture = lastLabeledFuture.concat([
+          JSON.parse(JSON.stringify(lastLabeled)),
+        ]);
+        setLastLabeledFuture(newLastLabeledFuture);
+        setLastLabeled(lastL);
+      }
+      return true;
+    }
+    return false;
+  };
+
+  const redoLabelData = () => {
+    if (labelDataFuture.length > 0) {
+      const next = labelDataFuture.pop();
+      if (next) {
+        const newLabelDataHistory = labelDataHistory.concat([
+          JSON.parse(JSON.stringify(labelData)),
+        ]);
+        setLabelDataHistory(newLabelDataHistory);
+        setLabelData(next);
+      }
+      const nextL = lastLabeledFuture.pop();
+      if (nextL) {
+        const newLastLabeledHistory = lastLabeledHistory.concat([
+          JSON.parse(JSON.stringify(lastLabeled)),
+        ]);
+        setLastLabeledHistory(newLastLabeledHistory);
+        setLastLabeled(nextL);
+      }
+      return true;
+    }
+    return false;
   };
 
   return (
@@ -229,6 +317,8 @@ export const EditorContextProvider = (props: EditorContextProps) => {
         banner,
         setBanner,
         isAnalyzed,
+        undoLabelData,
+        redoLabelData,
         setIsAnalyzed,
         selectAndLabel,
         forceSetLabelData,

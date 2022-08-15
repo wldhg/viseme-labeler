@@ -20,7 +20,10 @@ ffmpeg.setFfmpegPath(ffmpegi.path.replace('app.asar', 'app.asar.unpacked'));
 ffmpeg.setFfprobePath(ffprobei.path.replace('app.asar', 'app.asar.unpacked'));
 
 export default (
-  getHermes: () => Promise<{ hermes: Hermes; mainWindow: BrowserWindow }>
+  getHermes: () => Promise<{
+    hermes: Hermes;
+    mainWindow: BrowserWindow;
+  }>
 ) => {
   ipcMain.on('ffmpeg-probe', (_, _inputPaths) => {
     const inputPaths = _inputPaths as string[];

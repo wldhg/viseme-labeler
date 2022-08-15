@@ -44,7 +44,7 @@ const EditorLabelVisualizer = (props: EditorLabelVisualizerProps) => {
   };
 
   return (
-    <div>
+    <div id="visemetrackcont">
       <div
         id="visemewrap"
         ref={wrap}
@@ -68,6 +68,7 @@ const EditorLabelVisualizer = (props: EditorLabelVisualizerProps) => {
         ))}
         <div id="visemeline" />
       </div>
+      {/* <canvas id="visemecanvas" /> */}
       <Selecto
         container={document.getElementById('visemewrap')}
         boundContainer={document.getElementById('visemewrap')}

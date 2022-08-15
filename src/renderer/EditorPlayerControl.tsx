@@ -1,9 +1,9 @@
 import { useContext } from 'react';
 import { Button, Stack, Tooltip } from '@mui/material';
 import { PlayArrow, Pause } from '@mui/icons-material';
-import { useHotkeys } from 'react-hotkeys-hook';
 import Selecto from 'react-selecto';
 import EditorContext, { EditorContextDefault } from '../context/editor';
+import GlobalContext from '../context/global';
 
 type EditorPlayerControlProps = {
   videoPlayer: HTMLVideoElement | null;
@@ -16,6 +16,7 @@ type EditorPlayerControlProps = {
 const EditorPlayerControl = (props: EditorPlayerControlProps) => {
   const { videoPlayer, audioPlayer, currentFrame, style, selecto } = props;
   const ed = useContext(EditorContext);
+  const ctx = useContext(GlobalContext);
 
   const emptySelection = () => {
     ed.setSelection(EditorContextDefault.selection);
@@ -52,7 +53,7 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
           audioPlayer.pause();
           audioPlayer.currentTime = seekTime;
         }
-      }, (1 / ed.videoInfo.fps) * 900);
+      }, ((1 / ed.videoInfo.fps) * 900) / ctx.playerSpeed);
       audioPlayer.play();
       videoPlayer.currentTime = seekTime;
     }
@@ -77,7 +78,7 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
           audioPlayer.pause();
           audioPlayer.currentTime = seekTime;
         }
-      }, (8 / ed.videoInfo.fps) * 950);
+      }, ((8 / ed.videoInfo.fps) * 950) / ctx.playerSpeed);
       audioPlayer.play();
       videoPlayer.currentTime = seekTime;
     }
@@ -99,11 +100,39 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
     }
   };
 
-  useHotkeys('ctrl+space', playPause);
-  useHotkeys('left', back8F);
-  useHotkeys('right', go8F);
-  useHotkeys(',', back1F);
-  useHotkeys('.', go1F);
+  const goToStart = () => {
+    if (videoPlayer && audioPlayer) {
+      emptySelection();
+      videoPlayer.currentTime = 0;
+      audioPlayer.currentTime = 0;
+    }
+  };
+
+  const goToEnd = () => {
+    if (videoPlayer && audioPlayer) {
+      emptySelection();
+      videoPlayer.currentTime = ed.videoInfo.duration;
+      audioPlayer.currentTime = ed.videoInfo.duration;
+    }
+  };
+
+  ctx.setShortcutFunction(' ', playPause);
+  ctx.setShortcutFunction('arrowup', back8F);
+  ctx.setShortcutFunction('arrowdown', go8F);
+  ctx.setShortcutFunction('arrowleft', back1F);
+  ctx.setShortcutFunction('arrowright', go1F);
+  ctx.setShortcutFunction('pageup', back1s);
+  ctx.setShortcutFunction('pagedown', go1s);
+  ctx.setShortcutFunction('home', goToStart);
+  ctx.setShortcutFunction('end', goToEnd);
+  ctx.setShortcutFunction(',', () => {
+    const newSpeed = ctx.playerSpeed - 0.1;
+    ctx.setPlayerSpeed(newSpeed < 0.1 ? 0.1 : newSpeed);
+  });
+  ctx.setShortcutFunction('.', () => {
+    const newSpeed = ctx.playerSpeed + 0.1;
+    ctx.setPlayerSpeed(newSpeed > 2 ? 2 : newSpeed);
+  });
 
   return (
     <Stack spacing={1} direction="row" style={style}>
@@ -115,63 +144,51 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
       >
         Control :{' '}
       </span>
-      <Tooltip title="Space">
+      <Tooltip title="Space key">
         <Button size="small" variant="outlined" onClick={playPause}>
           {videoPlayer && videoPlayer.paused ? <PlayArrow /> : <Pause />}
         </Button>
       </Tooltip>
-      <Tooltip title="Left Arrow">
+      <Tooltip title="Left Arrow key">
         <Button size="small" variant="outlined" onClick={back1F}>
           -1 frame
         </Button>
       </Tooltip>
-      <Tooltip title="Right Arrow">
+      <Tooltip title="Right Arrow key">
         <Button size="small" variant="outlined" onClick={go1F}>
           +1 frame
         </Button>
       </Tooltip>
-      <Tooltip title="Up Arrow">
+      <Tooltip title="Up Arrow key">
         <Button size="small" variant="outlined" onClick={back8F}>
           -8 frame
         </Button>
       </Tooltip>
-      <Tooltip title="Down Arrow">
+      <Tooltip title="Down Arrow key">
         <Button size="small" variant="outlined" onClick={go8F}>
           +8 frame
         </Button>
       </Tooltip>
-      <Button size="small" variant="outlined" onClick={back1s}>
-        -1 sec
-      </Button>
-      <Button size="small" variant="outlined" onClick={go1s}>
-        +1 sec
-      </Button>
-      <Button
-        size="small"
-        variant="text"
-        onClick={() => {
-          if (videoPlayer && audioPlayer) {
-            emptySelection();
-            videoPlayer.currentTime = 0;
-            audioPlayer.currentTime = 0;
-          }
-        }}
-      >
-        To Start
-      </Button>
-      <Button
-        size="small"
-        variant="text"
-        onClick={() => {
-          if (videoPlayer && audioPlayer) {
-            emptySelection();
-            videoPlayer.currentTime = ed.videoInfo.duration;
-            audioPlayer.currentTime = ed.videoInfo.duration;
-          }
-        }}
-      >
-        To End
-      </Button>
+      <Tooltip title="Page Up key">
+        <Button size="small" variant="outlined" onClick={back1s}>
+          -1 sec
+        </Button>
+      </Tooltip>
+      <Tooltip title="Page Down key">
+        <Button size="small" variant="outlined" onClick={go1s}>
+          +1 sec
+        </Button>
+      </Tooltip>
+      <Tooltip title="Home key">
+        <Button size="small" variant="text" onClick={goToStart}>
+          To Start
+        </Button>
+      </Tooltip>
+      <Tooltip title="End key">
+        <Button size="small" variant="text" onClick={goToEnd}>
+          To End
+        </Button>
+      </Tooltip>
     </Stack>
   );
 };

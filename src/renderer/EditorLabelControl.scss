@@ -1,0 +1,15 @@
+@keyframes visemelabelbuttonClickedAnimation {
+  0% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.78);
+  }
+  100% {
+    filter: brightness(1);
+  }
+}
+
+.visemelabelbutton-clicked {
+  animation: visemelabelbuttonClickedAnimation 0.5s ease-in-out;
+}

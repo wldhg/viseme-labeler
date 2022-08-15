@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState, useRef } from 'react';
 import { MemoryRouter as Router, Routes, Route } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 import {
@@ -84,6 +84,42 @@ const AppMain = () => {
   const ctx = useContext(GlobalContext);
   const dialog = useContext(DialogContext);
   const [open, setOpen] = useState(true);
+  const shiftPressed = useRef(false);
+  const ctrlPressed = useRef(false);
+
+  useEffect(() => {
+    const keyDownListener = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        shiftPressed.current = true;
+        return;
+      }
+      if (e.key === 'Control' || e.key === 'Command') {
+        ctrlPressed.current = true;
+        return;
+      }
+      const key = `${shiftPressed.current ? 'shift+' : ''}${
+        ctrlPressed.current ? 'ctrl+' : ''
+      }${e.key.toLowerCase()}`;
+      if (ctx.shortcutFunctions[key]) {
+        ctx.shortcutFunctions[key]();
+      }
+    };
+    const keyUpListener = (e: KeyboardEvent) => {
+      if (e.key === 'Shift') {
+        shiftPressed.current = false;
+      }
+      if (e.key === 'Control' || e.key === 'Command') {
+        ctrlPressed.current = false;
+      }
+    };
+    window.document.addEventListener('keydown', keyDownListener);
+    window.document.addEventListener('keyup', keyUpListener);
+    return () => {
+      window.document.removeEventListener('keydown', keyDownListener);
+      window.document.removeEventListener('keyup', keyUpListener);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     window.electron?.ipcRenderer.on('destroy-ask', () => {

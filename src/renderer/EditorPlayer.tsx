@@ -38,6 +38,17 @@ const EditorPlayer = (props: EditorPlayerProps) => {
   };
 
   useEffect(() => {
+    const a = audioPlayerRef.current;
+    const v = videoPlayerRef.current;
+    if (a) {
+      a.playbackRate = ctx.playerSpeed;
+    }
+    if (v) {
+      v.playbackRate = ctx.playerSpeed;
+    }
+  }, [ctx.playerSpeed, audioPlayerRef, videoPlayerRef]);
+
+  useEffect(() => {
     if (beforeItemIndex !== ctx.currentItemIndex) {
       ed.reset();
       ctx.setDoesCurrentItemHasChange(false);
