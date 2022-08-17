@@ -26,7 +26,6 @@ const Editor = () => {
   const videoPlayer = useRef<HTMLVideoElement>(null);
   const audioPlayer = useRef<HTMLAudioElement>(null);
   const [progress, setProgress] = useState<EditorPlayerProgressInfo>({
-    currentTime: 0,
     currentFrame: 0,
   });
 

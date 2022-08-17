@@ -38,24 +38,38 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
     if (videoPlayer && audioPlayer) {
       emptySelection();
       const currentTime = (currentFrame - 1) / ed.videoInfo.fps;
-      videoPlayer.currentTime = currentTime;
-      audioPlayer.currentTime = currentTime;
+      videoPlayer.currentTime = currentTime * ed.videoInfo.fpc;
+      audioPlayer.currentTime = currentTime * ed.videoInfo.fpc;
     }
   };
 
   const go1F = () => {
     if (videoPlayer && audioPlayer) {
-      audioPlayer.currentTime = videoPlayer.currentTime;
+      audioPlayer.addEventListener(
+        'seeked',
+        () => {
+          const seekTime = (currentFrame + 1) / ed.videoInfo.fps;
+          setTimeout(() => {
+            if (audioPlayer) {
+              if (!audioPlayer.paused) {
+                audioPlayer.addEventListener(
+                  'pause',
+                  () => {
+                    audioPlayer.currentTime = seekTime * ed.videoInfo.fpc;
+                  },
+                  { once: true }
+                );
+                audioPlayer.pause();
+              }
+            }
+          }, ((1 / ed.videoInfo.fps) * 900) / ctx.playerSpeed);
+          audioPlayer.play();
+          videoPlayer.currentTime = seekTime * ed.videoInfo.fpc;
+        },
+        { once: true }
+      );
       emptySelection();
-      const seekTime = (currentFrame + 1) / ed.videoInfo.fps;
-      setTimeout(() => {
-        if (audioPlayer) {
-          audioPlayer.pause();
-          audioPlayer.currentTime = seekTime;
-        }
-      }, ((1 / ed.videoInfo.fps) * 900) / ctx.playerSpeed);
-      audioPlayer.play();
-      videoPlayer.currentTime = seekTime;
+      audioPlayer.currentTime = videoPlayer.currentTime;
     }
   };
 
@@ -63,31 +77,64 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
     if (videoPlayer && audioPlayer) {
       emptySelection();
       const currentTime = (currentFrame - 8) / ed.videoInfo.fps;
-      videoPlayer.currentTime = currentTime;
-      audioPlayer.currentTime = currentTime;
+      videoPlayer.currentTime = currentTime * ed.videoInfo.fpc;
+      audioPlayer.currentTime = currentTime * ed.videoInfo.fpc;
     }
   };
 
   const go8F = () => {
     if (videoPlayer && audioPlayer) {
-      audioPlayer.currentTime = videoPlayer.currentTime;
       emptySelection();
       const seekTime = (currentFrame + 8) / ed.videoInfo.fps;
-      setTimeout(() => {
-        if (audioPlayer) {
-          audioPlayer.pause();
-          audioPlayer.currentTime = seekTime;
-        }
-      }, ((8 / ed.videoInfo.fps) * 950) / ctx.playerSpeed);
-      audioPlayer.play();
-      videoPlayer.currentTime = seekTime;
+      if (ctx.playerSpeed <= 0.8) {
+        setTimeout(() => {
+          if (videoPlayer) {
+            if (!videoPlayer.paused) {
+              videoPlayer.addEventListener(
+                'pause',
+                () => {
+                  videoPlayer.currentTime = seekTime * ed.videoInfo.fpc;
+                },
+                { once: true }
+              );
+              videoPlayer.pause();
+            }
+          }
+          videoPlayer.currentTime = seekTime * ed.videoInfo.fpc;
+        }, ((8 / ed.videoInfo.fps) * 950) / ctx.playerSpeed);
+        videoPlayer.play();
+      } else {
+        audioPlayer.addEventListener(
+          'seeked',
+          () => {
+            setTimeout(() => {
+              if (audioPlayer) {
+                if (!audioPlayer.paused) {
+                  audioPlayer.addEventListener(
+                    'pause',
+                    () => {
+                      audioPlayer.currentTime = seekTime;
+                    },
+                    { once: true }
+                  );
+                  audioPlayer.pause();
+                }
+              }
+            }, ((8 / ed.videoInfo.fps) * 950) / ctx.playerSpeed);
+            audioPlayer.play();
+            videoPlayer.currentTime = seekTime;
+          },
+          { once: true }
+        );
+        audioPlayer.currentTime = videoPlayer.currentTime;
+      }
     }
   };
 
   const back1s = () => {
     if (videoPlayer && audioPlayer) {
       emptySelection();
-      videoPlayer.currentTime -= 1;
+      videoPlayer.currentTime -= 1 * ed.videoInfo.fpc;
       audioPlayer.currentTime = videoPlayer.currentTime;
     }
   };
@@ -95,7 +142,7 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
   const go1s = () => {
     if (videoPlayer && audioPlayer) {
       emptySelection();
-      videoPlayer.currentTime += 1;
+      videoPlayer.currentTime += 1 * ed.videoInfo.fpc;
       audioPlayer.currentTime = videoPlayer.currentTime;
     }
   };
@@ -111,8 +158,8 @@ const EditorPlayerControl = (props: EditorPlayerControlProps) => {
   const goToEnd = () => {
     if (videoPlayer && audioPlayer) {
       emptySelection();
-      videoPlayer.currentTime = ed.videoInfo.duration;
-      audioPlayer.currentTime = ed.videoInfo.duration;
+      videoPlayer.currentTime = ed.videoInfo.duration * ed.videoInfo.fpc;
+      audioPlayer.currentTime = ed.videoInfo.duration * ed.videoInfo.fpc;
     }
   };
 

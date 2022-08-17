@@ -6,31 +6,20 @@ import EditorContext, {
 import visemes from '../visemes/visemes';
 
 type EditorLabelVisualizerTrackProps = {
-  currentFrame: number;
+  sliceMin: number;
+  sliceMax: number;
   track: EditorLabelTrack;
 };
 
-const visibleFrameCountPrev = 60;
-const visibleFrameCountPost = 90;
-
 const EditorLabelVisualizerTrack = (props: EditorLabelVisualizerTrackProps) => {
-  const { currentFrame, track } = props;
+  const { sliceMin, sliceMax, track } = props;
   const ed = useContext(EditorContext);
-
-  const sliceMin = Math.max(0, currentFrame - visibleFrameCountPrev);
-  const sliceMax = Math.min(
-    ed.labelData.timing.length,
-    currentFrame + visibleFrameCountPost
-  );
-
-  const currentCursor = Math.min(currentFrame, visibleFrameCountPrev);
 
   return (
     <div
       className="visemecont"
       style={
         {
-          '--current-frame': currentCursor,
           '--track-no': track,
         } as React.CSSProperties
       }

@@ -12,6 +12,13 @@ const EditorPlayerInfo = (props: EditorPlayerInfoProps) => {
   const ed = useContext(EditorContext);
   const { currentFrame } = props;
 
+  let waveformOffsetString = `${ed.waveformOffset}`;
+  if (ed.waveformOffset > 0) {
+    waveformOffsetString = `→${Math.abs(ed.waveformOffset)}`;
+  } else if (ed.waveformOffset < 0) {
+    waveformOffsetString = `←${Math.abs(ed.waveformOffset)}`;
+  }
+
   return (
     <Card raised style={{ padding: '8px 16px' }}>
       <Breadcrumbs style={{ fontFamily: 'Inconsolata, monospace' }}>
@@ -19,7 +26,8 @@ const EditorPlayerInfo = (props: EditorPlayerInfoProps) => {
         <span>FPS: {ed.videoInfo.fps}</span>
         <span>Frames: {ed.videoInfo.frames}</span>
         <span>Current Frame: {currentFrame}</span>
-        <span>Playback Speed: {ctx.playerSpeed.toFixed(1)}</span>
+        <span>Speed: {ctx.playerSpeed.toFixed(1)}</span>
+        <span>Wave Offset: {waveformOffsetString}</span>
       </Breadcrumbs>
     </Card>
   );

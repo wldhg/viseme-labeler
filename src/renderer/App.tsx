@@ -132,6 +132,7 @@ const AppMain = () => {
           <span>If you close VisLab, you will lose all changes.</span>
         );
         dialog.setButtonLabel('Close VisLab');
+        dialog.setShowButtons(true);
         dialog.setShow(true);
       } else {
         window.electron.ipcRenderer.sendMessage('destroy-force', []);

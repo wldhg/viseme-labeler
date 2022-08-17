@@ -14,10 +14,6 @@ $viseme-others: red;
 $viseme-selected-dark: yellow;
 $viseme-selected-light: red;
 
-#visemetrackcont {
-  position: relative;
-}
-
 #visemewrap {
   background-color: rgba(128, 128, 128, 0.1);
   border-radius: 0.5em;
@@ -40,6 +36,7 @@ $viseme-selected-light: red;
 
   .visemecont {
     position: absolute;
+    z-index: 1;
     left: 32px;
     right: 32px;
     top: 16px;
@@ -65,7 +62,7 @@ $viseme-selected-light: red;
     );
     position: absolute;
     bottom: 8px;
-    left: 331px;
+    left: 330px;
   }
 
   .light-container & .visemeblock {
@@ -183,11 +180,18 @@ $viseme-selected-light: red;
   }
 }
 
-#visemecanvas {
-  background-color: red;
-  position: absolute;
-  top: 43px;
+#viseme-waveform {
+  --waveform-offset: 17;
   height: $viseme-block-height;
-  min-height: 0;
+  margin-top: 32px - $viseme-block-pad;
+  width: calc(
+    var(--width-base) - var(--waveform-offset) * #{$viseme-block-width +
+      $viseme-block-pad}
+  );
+  margin-left: calc(
+    316px + var(--waveform-offset) * #{$viseme-block-width + $viseme-block-pad} +
+      var(--current-frame) * #{-1 * ($viseme-block-width + $viseme-block-pad)}
+  );
+  position: absolute;
   z-index: 0;
 }

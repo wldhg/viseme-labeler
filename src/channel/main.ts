@@ -2,13 +2,18 @@
 /* eslint-disable promise/no-promise-in-callback */
 /* eslint-disable no-console */
 
+import os from 'os';
 import fs from 'fs';
+import path from 'path';
 import { BrowserWindow, shell, ipcMain, dialog } from 'electron';
 import ffmpeg from 'fluent-ffmpeg';
 import ffmpegi from '@ffmpeg-installer/ffmpeg';
 // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 import ffprobei from '@ffprobe-installer/ffprobe';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import trimImage from './trimImage';
 import { getFilesRecursively, Hermes } from './shared';
 import {
   EditorLabelContent,
@@ -73,6 +78,42 @@ export default (
         })
         .run();
     });
+  });
+
+  ipcMain.on('ffmpeg-wavespic', (_, [_filePath, width]) => {
+    getHermes()
+      .then(({ hermes }) => {
+        const outputPath = path.join(
+          os.tmpdir(),
+          `wavespic-${new Date().getTime()}.png`
+        );
+        const outputTrimmedPath = path.join(
+          os.tmpdir(),
+          `wavespic-${new Date().getTime()}-trimmed.png`
+        );
+        ffmpeg(_filePath)
+          .complexFilter(
+            `aformat=channel_layouts=mono,compand,showwavespic=colors=#e44993:s=${width}x600`
+          )
+          .frames(1)
+          .output(outputPath)
+          .on('end', () => {
+            trimImage(outputPath, outputTrimmedPath, (err) => {
+              if (err) {
+                throw err;
+              }
+              const imageB64 = fs.readFileSync(outputTrimmedPath, 'base64');
+              hermes(
+                'ffmpeg-wavespic-done',
+                `data:image/png;base64,${imageB64}`
+              );
+            });
+          })
+          .on('error', console.error)
+          .run();
+        return null;
+      })
+      .catch(console.error);
   });
 
   ipcMain.on('dir-select', () => {

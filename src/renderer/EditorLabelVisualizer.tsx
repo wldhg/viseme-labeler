@@ -1,6 +1,7 @@
 import React, { useContext, useRef } from 'react';
 import Selecto, { OnSelect } from 'react-selecto';
 import EditorLabelVisualizerTrack from './EditorLabelVisualizerTrack';
+import EditorLabelVisualizerWaveform from './EditorLabelVisualizerWaveform';
 import EditorContext, {
   MutableEditorSelection,
   EditorLabelTracks,
@@ -12,6 +13,9 @@ type EditorLabelVisualizerProps = {
   currentFrame: number;
   selectoRef: React.RefObject<Selecto>;
 };
+
+const visibleFrameCountPrev = 60;
+const visibleFrameCountPost = 90;
 
 const EditorLabelVisualizer = (props: EditorLabelVisualizerProps) => {
   const { currentFrame, selectoRef } = props;
@@ -43,6 +47,13 @@ const EditorLabelVisualizer = (props: EditorLabelVisualizerProps) => {
     }
   };
 
+  const sliceMin = Math.max(0, currentFrame - visibleFrameCountPrev);
+  const sliceMax = Math.min(
+    ed.labelData.timing.length,
+    currentFrame + visibleFrameCountPost
+  );
+  const currentCursor = Math.min(currentFrame, visibleFrameCountPrev);
+
   return (
     <div id="visemetrackcont">
       <div
@@ -56,19 +67,23 @@ const EditorLabelVisualizer = (props: EditorLabelVisualizerProps) => {
           return false;
         }}
         style={
-          { '--track-cnt': EditorLabelTracks.length } as React.CSSProperties
+          {
+            '--current-frame': currentCursor,
+            '--track-cnt': EditorLabelTracks.length,
+          } as React.CSSProperties
         }
       >
         {EditorLabelTracks.map((t) => (
           <EditorLabelVisualizerTrack
             key={`visualizetrack-${t}`}
             track={t}
-            currentFrame={currentFrame}
+            sliceMin={sliceMin}
+            sliceMax={sliceMax}
           />
         ))}
         <div id="visemeline" />
+        <EditorLabelVisualizerWaveform currentFrame={currentFrame} />
       </div>
-      {/* <canvas id="visemecanvas" /> */}
       <Selecto
         container={document.getElementById('visemewrap')}
         boundContainer={document.getElementById('visemewrap')}

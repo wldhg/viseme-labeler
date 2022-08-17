@@ -130,6 +130,7 @@ const AppToolbar = (props: AppToolbarProps) => {
       <span>MP4 files will be saved on the same directory as MOV files.</span>
     );
     dialog.setButtonLabel('Convert');
+    dialog.setShowButtons(true);
     dialog.setShow(true);
     dialog.setButtonHandler(() => {
       resetContextWithConfirm()

@@ -19,7 +19,7 @@ const EditorPlayerProgress = (props: EditorPlayerProgressProps) => {
   const { player } = props;
   const ed = useContext(EditorContext);
 
-  const currentTime = player ? player.currentTime : 0;
+  const currentTime = player ? player.currentTime / ed.videoInfo.fpc : 0;
 
   return (
     <Stack

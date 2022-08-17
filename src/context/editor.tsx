@@ -5,6 +5,7 @@ export type EditorVideoInfo = {
   readonly duration: number;
   readonly fps: number;
   readonly frames: number;
+  readonly fpc: number;
 };
 
 export type EditorLabelTrack = 0;
@@ -67,6 +68,10 @@ export type EditorContextT = {
   ) => void;
   undoLabelData: () => boolean;
   redoLabelData: () => boolean;
+  readonly waveformOffset: number;
+  setWaveformOffset: (offset: number) => void;
+  readonly waveformVisiblity: boolean;
+  setWaveformVisiblity: (visiblity: boolean) => void;
   forceSetLabelData: (timings: number[], labels: EditorLabelContent) => void;
   reset: () => void;
 };
@@ -76,6 +81,7 @@ export const EditorContextDefault: EditorContextT = {
     duration: 0,
     fps: 0,
     frames: 0,
+    fpc: 1.0,
   },
   setVideoInfo: (_videoInfo: EditorVideoInfo) => {},
   labelData: {
@@ -102,6 +108,10 @@ export const EditorContextDefault: EditorContextT = {
   ) => {},
   undoLabelData: () => false,
   redoLabelData: () => false,
+  waveformOffset: 0,
+  setWaveformOffset: (_offset: number) => {},
+  waveformVisiblity: true,
+  setWaveformVisiblity: (_visiblity: boolean) => {},
   forceSetLabelData: (_timings: number[], _labels: EditorLabelContent) => {},
   reset: () => {},
 };
@@ -144,6 +154,8 @@ export const EditorContextProvider = (props: EditorContextProps) => {
   const [banner, setBannerInternal] = useState<string>('');
   const banners = useRef<{ [key: string]: string }>(defaultBanners);
   const bannerAutoRemoval = useRef<{ [key: string]: NodeJS.Timeout }>({});
+  const [waveformOffset, setWaveformOffset] = useState<number>(0);
+  const [waveformVisiblity, setWaveformVisiblity] = useState<boolean>(true);
 
   const selectAndLabel = (
     selec: EditorSelection,
@@ -203,7 +215,7 @@ export const EditorContextProvider = (props: EditorContextProps) => {
     }
   };
 
-  const setBanner = (bannerCategory: string, _banner: string, time = -1) => {
+  const setBanner = (bannerCategory: string, _banner: string, time = 0) => {
     if (banners.current && bannerAutoRemoval.current) {
       if (bannerAutoRemoval.current[bannerCategory]) {
         clearTimeout(bannerAutoRemoval.current[bannerCategory]);
@@ -214,6 +226,10 @@ export const EditorContextProvider = (props: EditorContextProps) => {
           delete banners.current[bannerCategory];
           calcBanner();
         }, time);
+      } else if (time === -1) {
+        if (bannerCategory in banners.current) {
+          delete banners.current[bannerCategory];
+        }
       }
       calcBanner();
     }
@@ -244,6 +260,8 @@ export const EditorContextProvider = (props: EditorContextProps) => {
     setLabelDataHistory([]);
     setLastLabeledFuture([]);
     setLabelDataFuture([]);
+    setWaveformOffset(0);
+    setWaveformVisiblity(true);
     setIsAnalyzed(false);
     setBannerInternal('');
     banners.current = defaultBanners;
@@ -319,6 +337,10 @@ export const EditorContextProvider = (props: EditorContextProps) => {
         isAnalyzed,
         undoLabelData,
         redoLabelData,
+        waveformOffset,
+        setWaveformOffset,
+        waveformVisiblity,
+        setWaveformVisiblity,
         setIsAnalyzed,
         selectAndLabel,
         forceSetLabelData,
