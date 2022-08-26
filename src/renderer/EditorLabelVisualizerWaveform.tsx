@@ -15,7 +15,7 @@ const EditorLabelVisualizerWaveform = (
   const { currentFrame } = props;
   const ctx = useContext(GlobalContext);
   const ed = useContext(EditorContext);
-  const [beforeFrameCount, setBeforeFrameCount] = useState<number>(-1);
+  const [beforeAnalyzed, setBeforeAnalyzed] = useState<boolean>(true);
   const [imgSrc, setImgSrc] = useState<string>(transparent1x1PNGB64);
   const [imgWidth, setImgWidth] = useState<number>(0);
 
@@ -46,7 +46,7 @@ const EditorLabelVisualizerWaveform = (
     if (
       ctx.currentItemIndex >= 0 &&
       ed.videoInfo.frames > 0 &&
-      beforeFrameCount === 0 &&
+      beforeAnalyzed === false &&
       ed.isAnalyzed
     ) {
       setImgSrc(transparent1x1PNGB64);
@@ -64,7 +64,7 @@ const EditorLabelVisualizerWaveform = (
       ]);
       ed.setBanner('9-wavespic', 'Generating waveform...');
     }
-    setBeforeFrameCount(ed.videoInfo.frames);
+    setBeforeAnalyzed(ed.isAnalyzed);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ed.videoInfo.frames, ctx.currentItemIndex, ed.isAnalyzed]);
 
